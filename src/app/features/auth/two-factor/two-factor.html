@@ -1,0 +1,240 @@
+<app-auth-layout
+  [title]="'auth.twoFactor' | translate"
+  [subtitle]="'auth.twoFactorSub' | translate"
+  icon="shield"
+  [backLabel]="'auth.backToSignIn' | translate"
+  backHref="/auth/login"
+>
+  @if (isSuccess()) {
+    <!-- Success state -->
+    <div class="rounded-2xl border border-success/30 bg-success/5 p-6 text-center space-y-4 animate-in zoom-in-95 fade-in duration-300">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success shadow-lg shadow-success/10">
+        <app-icon name="check-circle" size="lg" />
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-foreground">
+          {{ activeTab() === 'qr' ? ('auth.twoFactor' | translate) + ' - ' + ('common.confirm' | translate) : ('auth.codeVerifiedSuccess' | translate) }}
+        </h3>
+        <p class="text-xs text-muted mt-1 leading-relaxed">
+          {{ activeTab() === 'qr'
+              ? ('auth.twoFactorSuccessQr' | translate)
+              : ('auth.twoFactorSuccessCode' | translate) }}
+        </p>
+      </div>
+      <div class="pt-2">
+        <app-button
+          variant="primary"
+          size="md"
+          [fullWidth]="true"
+          (click)="goToDashboard()"
+        >
+          {{ 'auth.continueToDashboard' | translate }}
+        </app-button>
+      </div>
+    </div>
+  } @else {
+    <!-- Mode Switcher Tabs -->
+    <div class="grid grid-cols-2 p-1 rounded-xl bg-surface-raised border border-border mb-6">
+      <button
+        type="button"
+        class="flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer"
+        [class.bg-surface]="activeTab() === 'code'"
+        [class.text-foreground]="activeTab() === 'code'"
+        [class.shadow-xs]="activeTab() === 'code'"
+        [class.text-muted]="activeTab() !== 'code'"
+        (click)="switchTab('code')"
+      >
+        <app-icon name="key" size="xs" />
+        <span>{{ 'auth.enterCodeTab' | translate }}</span>
+      </button>
+      <button
+        type="button"
+        class="flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer"
+        [class.bg-surface]="activeTab() === 'qr'"
+        [class.text-foreground]="activeTab() === 'qr'"
+        [class.shadow-xs]="activeTab() === 'qr'"
+        [class.text-muted]="activeTab() !== 'qr'"
+        (click)="switchTab('qr')"
+      >
+        <app-icon name="qr-code" size="xs" />
+        <span>{{ 'auth.scanQrTab' | translate }}</span>
+      </button>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-5 animate-in fade-in duration-200">
+        <app-alert
+          variant="danger"
+          [title]="errorMessage()!"
+          [dismissible]="true"
+          (dismiss)="errorMessage.set(null)"
+        />
+      </div>
+    }
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- TAB 1: Enter 6-digit TOTP code              -->
+    <!-- ─────────────────────────────────────────── -->
+    @if (activeTab() === 'code') {
+      @if (!useRecoveryCode()) {
+        <div class="space-y-6 animate-in fade-in duration-200">
+          <div class="space-y-3">
+            <div class="text-center space-y-1">
+              <label class="block text-xs font-semibold text-foreground">
+                {{ 'auth.enter6DigitApp' | translate }}
+              </label>
+              <p class="text-[11px] text-muted">
+                {{ 'auth.codeValidFor' | translate }}
+              </p>
+            </div>
+
+            <div class="py-2">
+              <app-otp-input
+                #otpInputRef
+                [length]="6"
+                type="number"
+                [disabled]="isLoading()"
+                (valueChange)="onOtpChange($event)"
+                (completed)="onOtpComplete($event)"
+              />
+            </div>
+          </div>
+
+          <app-button
+            variant="primary"
+            size="md"
+            [fullWidth]="true"
+            [loading]="isLoading()"
+            [disabled]="totpCode().length < 6"
+            (click)="handleSubmitTotp()"
+          >
+            {{ 'auth.verifyCode' | translate }}
+          </app-button>
+
+          <div class="text-center pt-1">
+            <button
+              type="button"
+              class="text-xs text-primary hover:text-primary-dark hover:underline font-medium cursor-pointer"
+              (click)="toggleRecoveryCode(true)"
+            >
+              {{ 'auth.lostPhoneBackup' | translate }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Backup recovery code input -->
+        <form (submit)="handleSubmitBackup($event)" class="space-y-5 animate-in fade-in duration-200">
+          <div class="p-3.5 rounded-xl border border-warning/30 bg-warning/5 text-xs text-muted leading-relaxed flex items-start gap-2.5">
+            <app-icon name="alert-triangle" size="xs" class="text-warning shrink-0 mt-0.5" />
+            <span>{{ 'auth.backupCodeDesc' | translate }}</span>
+          </div>
+
+          <app-form-field [label]="'auth.recoveryCode' | translate" [required]="true">
+            <app-input
+              type="text"
+              placeholder="e.g. 8A3F-9B21"
+              [ngModel]="backupCode()"
+              (ngModelChange)="backupCode.set($event)"
+              name="backupCode"
+              [required]="true"
+              class="font-mono text-center tracking-wider uppercase"
+            />
+          </app-form-field>
+
+          <app-button
+            type="submit"
+            variant="primary"
+            size="md"
+            [fullWidth]="true"
+            [loading]="isLoading()"
+            [disabled]="!backupCode()"
+          >
+            {{ 'auth.verifyRecoveryCode' | translate }}
+          </app-button>
+
+          <div class="text-center pt-1">
+            <button
+              type="button"
+              class="text-xs text-primary hover:text-primary-dark hover:underline font-medium cursor-pointer"
+              (click)="toggleRecoveryCode(false)"
+            >
+              {{ 'auth.returnToTotp' | translate }}
+            </button>
+          </div>
+        </form>
+      }
+    }
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- TAB 2: Scan QR Code & Mobile Pairing        -->
+    <!-- ─────────────────────────────────────────── -->
+    @if (activeTab() === 'qr') {
+      <div class="space-y-5 animate-in fade-in duration-200">
+        <!-- Step guide pills -->
+        <div class="p-3 rounded-xl border border-border bg-surface-raised/40 space-y-2 text-xs text-muted">
+          <div class="flex items-center gap-2 text-foreground font-medium">
+            <div class="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-[10px]">
+              1
+            </div>
+            <span>{{ 'auth.scanQrInstruction' | translate }}</span>
+          </div>
+        </div>
+
+        <!-- QR Code Display Card with ambient glow -->
+        <div class="relative flex flex-col items-center justify-center p-4 rounded-2xl bg-surface border border-border shadow-xs">
+          <!-- Ambient pulse ring behind QR -->
+          <div class="relative flex items-center justify-center">
+            <app-qr-code
+              [value]="qrAuthUri"
+              [manualKey]="manualSecretKey"
+              [size]="180"
+              [label]="'auth.scanQrLabel' | translate"
+            />
+          </div>
+
+          <!-- Live status indicator -->
+          <div class="mt-3 flex items-center gap-2 text-[11px] text-muted font-medium">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span>{{ 'auth.qrWaitingScan' | translate }}</span>
+          </div>
+        </div>
+
+        <!-- Action button -->
+        <app-button
+          variant="primary"
+          size="md"
+          [fullWidth]="true"
+          icon="check-circle"
+          [loading]="isLoading()"
+          (click)="handleConfirmQr()"
+        >
+          {{ 'auth.confirmQrScanned' | translate }}
+        </app-button>
+
+        <!-- Switch to code link -->
+        <div class="text-center pt-0.5">
+          <button
+            type="button"
+            class="text-xs text-muted hover:text-foreground font-medium transition-colors cursor-pointer inline-flex items-center gap-1"
+            (click)="switchTab('code')"
+          >
+            <span>{{ 'auth.orEnterOtpInstead' | translate }}</span>
+            <app-icon name="arrow-right" size="xs" />
+          </button>
+        </div>
+      </div>
+    }
+  }
+
+  <ng-container auth-footer>
+    <p class="text-xs text-muted">
+      {{ 'auth.backToSignIn' | translate }}
+      <a routerLink="/auth/login" class="font-semibold text-primary hover:underline ml-1">
+        {{ 'auth.signIn' | translate }}
+      </a>
+    </p>
+  </ng-container>
+</app-auth-layout>

@@ -1,17 +1,36 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ──────────────────────────────────────────────────────────
+# .gitignore — admin-portal-angular
+# Production-ready gitignore for Angular + TypeScript
+# ──────────────────────────────────────────────────────────
 
-# Compiled output
+# Compiled output & Build artifacts
 /dist
 /tmp
 /out-tsc
 /bazel-out
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# Angular CLI cache & local state
+.angular/
+.sass-cache/
 
-# IDEs and editors
+# Node dependencies
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment files & Secrets
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# IDEs & Code Editors
 .idea/
 .project
 .classpath
@@ -19,6 +38,10 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
 
 # Visual Studio Code
 .vscode/*
@@ -29,16 +52,25 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
+# Testing & Coverage
 /coverage
-/libpeerconnection.log
+/.nyc_output
 testem.log
-/typings
+/libpeerconnection.log
 __screenshots__/
+playwright-report/
+test-results/
 
-# System files
+# Miscellaneous
+/connect.lock
+/typings
+*.log
+
+# Operating System Files
 .DS_Store
+.DS_Store?
+._*
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/

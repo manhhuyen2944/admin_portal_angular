@@ -1,0 +1,341 @@
+<!-- ──────────────────────────────────────────
+     DESKTOP / LAPTOP LEFT SIDEBAR (≥ lg)
+────────────────────────────────────────── -->
+<aside
+  class="hidden lg:flex flex-col shrink-0 border-r border-border bg-surface h-full transition-[width] duration-200 relative z-[1025]"
+  [class.w-64]="!collapsed()"
+  [class.xl:w-72]="!collapsed()"
+  [class.w-[72px]]="collapsed()"
+  role="navigation"
+  aria-label="Main navigation"
+>
+  <!-- Sidebar Brand Header (Horizontally aligned with header, floating border toggle: 50% sidebar, 50% header) -->
+  <div class="h-16 shrink-0 flex items-center border-b border-border bg-surface relative px-3.5">
+    <ng-content select="[sidebar-header]" />
+
+    <!-- Default Brand Header if no custom header provided -->
+    @if (showBrand()) {
+      @if (!collapsed()) {
+        <div class="flex items-center gap-2.5 min-w-0 pr-3">
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-white font-bold shadow-md shadow-primary/25">
+            <app-icon [name]="brandIcon()" size="sm" />
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <h2 class="text-sm font-bold text-foreground tracking-tight leading-tight truncate">{{ brandTitle() }}</h2>
+              @if (brandBadge()) {
+                <span class="inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.2 text-[9px] font-semibold">
+                  {{ brandBadge() }}
+                </span>
+              }
+            </div>
+            @if (brandSubtitle()) {
+              <p class="text-[10px] text-muted truncate">{{ brandSubtitle() }}</p>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="flex h-9 w-9 mx-auto items-center justify-center rounded-xl bg-primary text-white font-bold shadow-md shadow-primary/25" [title]="brandTitle()">
+          <app-icon [name]="brandIcon()" size="sm" />
+        </div>
+      }
+    }
+
+    <!-- Collapse / Expand Toggle Button (50% in Header, 50% in Sidebar Menu, horizontally aligned with logo) -->
+    <button
+      type="button"
+      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-surface shadow-sm hover:shadow-md hover:bg-primary hover:text-white hover:border-primary text-muted transition-all cursor-pointer"
+      [attr.aria-label]="collapsed() ? ('sidebar.expand' | translate) : ('sidebar.collapse' | translate)"
+      [title]="collapsed() ? ('sidebar.expand' | translate) : ('sidebar.collapse' | translate)"
+      (click)="toggleCollapse()"
+    >
+      <app-icon [name]="collapsed() ? 'chevron-right' : 'chevron-left'" size="xs" />
+    </button>
+  </div>
+
+  <!-- Sidebar Navigation Items (Scrollable) -->
+  <div class="flex-1 overflow-y-auto px-2 py-3 space-y-1">
+    <!-- If data sections provided -->
+    @if (sections() && sections()!.length > 0) {
+      @if (!collapsed() && sectionHeading()) {
+        <h3 class="text-[10px] font-bold text-muted uppercase tracking-wider px-2 mb-2">{{ sectionHeading() }}</h3>
+      }
+      @for (sec of sections(); track sec.id) {
+        <div class="space-y-0.5">
+          <div
+            class="flex items-center w-full rounded-xl text-xs font-medium text-foreground hover:bg-surface-raised transition-colors group cursor-pointer"
+            [class.justify-center]="collapsed()"
+            [class.bg-surface-raised]="expandedSubmenus()[sec.id] && !collapsed()"
+          >
+            <!-- Main button to scroll to section, routerLink, or toggle submenu -->
+            @if (sec.routerLink && (!sec.subItems || sec.subItems.length === 0)) {
+              <a
+                [routerLink]="sec.routerLink"
+                class="flex items-center gap-3 flex-1 min-w-0 px-2.5 py-2 text-left cursor-pointer"
+                [title]="sec.title"
+                (click)="onParentNavClick(sec)"
+              >
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-raised group-hover:bg-primary/15 transition-colors">
+                  <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
+                </div>
+                @if (!collapsed()) {
+                  <span class="truncate flex-1 text-xs font-semibold">{{ sec.title }}</span>
+                }
+              </a>
+            } @else {
+              <button
+                type="button"
+                class="flex items-center gap-3 flex-1 min-w-0 px-2.5 py-2 text-left cursor-pointer"
+                [title]="sec.title"
+                (click)="onParentNavClick(sec)"
+              >
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-raised group-hover:bg-primary/15 transition-colors">
+                  <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
+                </div>
+                @if (!collapsed()) {
+                  <span class="truncate flex-1 text-xs font-semibold">{{ sec.title }}</span>
+                }
+              </button>
+            }
+
+            <!-- Dropdown toggle chevron button if item has subItems -->
+            @if (!collapsed() && sec.subItems && sec.subItems.length > 0) {
+              <button
+                type="button"
+                class="p-2 mr-1 rounded-lg text-muted hover:text-foreground hover:bg-surface transition-colors cursor-pointer"
+                [attr.aria-label]="'Toggle ' + sec.title + ' submenu'"
+                (click)="toggleSubmenu(sec.id, $event)"
+              >
+                <app-icon
+                  name="chevron-down"
+                  size="xs"
+                  class="transition-transform duration-200"
+                  [class.rotate-180]="expandedSubmenus()[sec.id]"
+                />
+              </button>
+            } @else if (!collapsed() && sec.badge) {
+              <span class="text-[10px] rounded bg-surface-raised border border-border px-1.5 py-0.5 text-muted font-mono mr-2.5 shrink-0">{{ sec.badge }}</span>
+            }
+          </div>
+
+          <!-- Nested Submenu Child Items -->
+          @if (!collapsed() && sec.subItems && expandedSubmenus()[sec.id]) {
+            <div class="pl-8 pr-1 py-1 space-y-1 border-l-2 border-primary/30 ml-4 animate-in slide-in-from-top-1 duration-150">
+              @for (sub of sec.subItems; track sub.label) {
+                @if (sub.routerLink) {
+                  <a
+                    [routerLink]="sub.routerLink"
+                    class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
+                    (click)="onSubItemClick(sub.id ?? '')"
+                  >
+                    <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
+                    <span class="truncate">{{ sub.label }}</span>
+                  </a>
+                } @else {
+                  <button
+                    type="button"
+                    class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
+                    (click)="onSubItemClick(sub.id ?? '')"
+                  >
+                    <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
+                    <span class="truncate">{{ sub.label }}</span>
+                  </button>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- Projected custom nav content (for app-sidebar-item, app-sidebar-group, etc.) -->
+    <ng-content select="[sidebar]" />
+    <ng-content />
+  </div>
+
+  <!-- Sidebar Footer: Custom slot or User profile -->
+  <ng-content select="[sidebar-footer]" />
+
+  @if (showUserFooter()) {
+    <div class="p-3 border-t border-border bg-surface-raised/40 shrink-0">
+      @if (!collapsed()) {
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 min-w-0">
+            <app-avatar [name]="effectiveUser().name" size="xs" />
+            <div class="min-w-0">
+              <p class="text-xs font-semibold text-foreground truncate">{{ effectiveUser().name }}</p>
+              <p class="text-[10px] text-muted truncate">{{ effectiveUser().role ?? 'Admin &bull; Online' }}</p>
+            </div>
+          </div>
+          <app-icon-button
+            name="log-out"
+            [label]="'common.signOut' | translate"
+            size="xs"
+            variant="ghost"
+            class="text-muted hover:text-danger cursor-pointer"
+            (clicked)="signOut.emit()"
+          />
+        </div>
+      } @else {
+        <div class="flex justify-center" [title]="effectiveUser().name">
+          <app-avatar [name]="effectiveUser().name" size="xs" />
+        </div>
+      }
+    </div>
+  }
+</aside>
+
+<!-- ──────────────────────────────────────────
+     MOBILE SIDEBAR NAVIGATION DRAWER (Slideout)
+────────────────────────────────────────── -->
+<app-drawer
+  [open]="drawerOpen()"
+  (openChange)="setDrawerOpen($event)"
+  side="left"
+  position="left"
+  [title]="brandTitle() + ' ' + ('nav.navigationMenu' | translate)"
+  size="sm"
+>
+  <div class="flex flex-col h-full justify-between -m-6">
+    <!-- Drawer Body with Scroll -->
+    <div class="p-4 space-y-5 overflow-y-auto flex-1">
+      <!-- App Header Card (Centered) -->
+      @if (showBrand()) {
+        <div class="flex flex-col items-center justify-center text-center p-4 rounded-2xl bg-surface-raised border border-border">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white font-bold shadow-md shadow-primary/25 mb-2">
+            <app-icon [name]="brandIcon()" size="md" />
+          </div>
+          <h3 class="text-sm font-bold text-foreground">{{ brandTitle() }}</h3>
+          @if (brandSubtitle()) {
+            <p class="text-[11px] text-muted mt-0.5">{{ brandSubtitle() }}</p>
+          }
+        </div>
+      }
+
+      <!-- Quick Controls on Mobile (Language, Density, Toast Demo) -->
+      @if (showControls()) {
+        <div class="space-y-2.5 p-3 rounded-xl bg-surface-raised/70 border border-border">
+          <h4 class="text-[10px] font-bold text-muted uppercase tracking-wider">{{ 'sidebar.quickPreferences' | translate }}</h4>
+          <div class="flex flex-wrap items-center gap-2">
+            <app-language-selector />
+            <app-density-selector />
+          </div>
+          <div class="pt-1">
+            <app-button size="xs" variant="outline" icon="bell" class="w-full justify-center" (click)="toastTrigger.emit()">
+              {{ 'sidebar.triggerToastDemo' | translate }}
+            </app-button>
+          </div>
+        </div>
+      }
+
+      <!-- Sections Catalog with Dropdown Sub-menus -->
+      @if (sections() && sections()!.length > 0) {
+        <div class="space-y-1">
+          @if (sectionHeading()) {
+            <h4 class="text-[11px] font-bold text-muted uppercase tracking-wider px-1 mb-2">{{ sectionHeading() }}</h4>
+          }
+          @for (sec of sections(); track sec.id) {
+            <div class="space-y-0.5">
+              <div
+                class="flex items-center w-full rounded-xl text-xs font-medium text-foreground hover:bg-surface-raised transition-colors group cursor-pointer"
+                [class.bg-surface-raised]="expandedSubmenus()[sec.id]"
+              >
+                @if (sec.routerLink && (!sec.subItems || sec.subItems.length === 0)) {
+                  <a
+                    [routerLink]="sec.routerLink"
+                    class="flex items-center gap-3 flex-1 min-w-0 px-3 py-2 text-left cursor-pointer"
+                    (click)="onParentNavClick(sec)"
+                  >
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                      <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span class="truncate flex-1 font-semibold">{{ sec.title }}</span>
+                  </a>
+                } @else {
+                  <button
+                    type="button"
+                    class="flex items-center gap-3 flex-1 min-w-0 px-3 py-2 text-left cursor-pointer"
+                    (click)="onParentNavClick(sec)"
+                  >
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                      <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span class="truncate flex-1 font-semibold">{{ sec.title }}</span>
+                  </button>
+                }
+
+                @if (sec.subItems && sec.subItems.length > 0) {
+                  <button
+                    type="button"
+                    class="p-2 mr-1 rounded-lg text-muted hover:text-foreground transition-colors cursor-pointer"
+                    (click)="toggleSubmenu(sec.id, $event)"
+                  >
+                    <app-icon
+                      name="chevron-down"
+                      size="xs"
+                      class="transition-transform duration-200"
+                      [class.rotate-180]="expandedSubmenus()[sec.id]"
+                    />
+                  </button>
+                } @else if (sec.badge) {
+                  <span class="text-[10px] rounded bg-surface border border-border px-1.5 py-0.5 text-muted font-mono mr-2 shrink-0">{{ sec.badge }}</span>
+                }
+              </div>
+
+              @if (sec.subItems && expandedSubmenus()[sec.id]) {
+                <div class="pl-8 pr-1 py-1 space-y-1 border-l-2 border-primary/30 ml-4 animate-in slide-in-from-top-1 duration-150">
+                  @for (sub of sec.subItems; track sub.label) {
+                    @if (sub.routerLink) {
+                      <a
+                        [routerLink]="sub.routerLink"
+                        class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
+                        (click)="onSubItemClick(sub.id ?? '')"
+                      >
+                        <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
+                        <span class="truncate">{{ sub.label }}</span>
+                      </a>
+                    } @else {
+                      <button
+                        type="button"
+                        class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
+                        (click)="onSubItemClick(sub.id ?? '')"
+                      >
+                        <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
+                        <span class="truncate">{{ sub.label }}</span>
+                      </button>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Projected mobile items -->
+      <ng-content select="[sidebar-mobile]" />
+      <ng-content />
+    </div>
+
+    <!-- Drawer Footer with User Info -->
+    @if (showUserFooter()) {
+      <div class="p-4 border-t border-border bg-surface-raised/40 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <app-avatar [name]="effectiveUser().name" size="sm" />
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-foreground truncate">{{ effectiveUser().name }}</p>
+            <p class="text-[10px] text-muted truncate">{{ effectiveUser().role ?? 'Admin &bull; Online' }}</p>
+          </div>
+        </div>
+        <app-icon-button
+          name="log-out"
+          [label]="'common.signOut' | translate"
+          size="xs"
+          variant="ghost"
+          class="text-muted hover:text-danger cursor-pointer"
+          (clicked)="signOut.emit()"
+        />
+      </div>
+    }
+  </div>
+</app-drawer>

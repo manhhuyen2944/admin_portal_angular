@@ -1,0 +1,109 @@
+<div
+  class="relative flex flex-col justify-between overflow-hidden bg-background text-foreground select-none"
+  [class.min-h-screen]="!embedded()"
+  [class.py-8]="embedded()"
+  [class.rounded-2xl]="embedded()"
+>
+  <!-- Ambient background decoration with gradient and blur -->
+  <div class="absolute inset-0 bg-radial from-primary/10 via-transparent to-transparent pointer-events-none"></div>
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- Top Bar: Logo & Controls -->
+  @if (showControls() && !embedded()) {
+    <header class="relative z-10 flex items-center justify-between px-6 py-4 border-b border-border/50 backdrop-blur-md bg-surface/50">
+      <a routerLink="/" class="flex items-center gap-2.5 group cursor-pointer">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white font-bold shadow-md shadow-primary/25 transition-transform group-hover:scale-105">
+          <app-icon name="layout-dashboard" size="sm" />
+        </div>
+        <span class="text-sm font-bold tracking-tight text-foreground">Admin Portal</span>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <app-theme-selector />
+        <app-language-selector />
+      </div>
+    </header>
+  }
+
+  <!-- Main Center Content -->
+  <main class="relative z-10 flex-1 flex items-center justify-center p-6 sm:p-12">
+    <div class="w-full max-w-lg text-center space-y-8 animate-in fade-in zoom-in-95 duration-300">
+      <!-- 404 Graphic Illustration Display -->
+      <div class="relative flex items-center justify-center">
+        <!-- Background giant typography -->
+        <span class="text-8xl sm:text-9xl font-black tracking-tighter text-foreground/5 select-none font-mono">
+          404
+        </span>
+
+        <!-- Center Floating Graphic -->
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="relative flex items-center justify-center">
+            <!-- Pulsing Rings -->
+            <div class="absolute h-28 w-28 rounded-full bg-primary/10 animate-ping duration-1000"></div>
+            <div class="absolute h-24 w-24 rounded-full border border-primary/30 animate-pulse"></div>
+
+            <!-- Glowing Icon Badge -->
+            <div class="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-surface border border-border shadow-2xl shadow-primary/20 text-primary">
+              <app-icon name="globe" size="xl" class="animate-spin-slow" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Badge & Heading -->
+      <div class="space-y-3 -mt-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-danger/10 text-danger border border-danger/20 text-xs font-mono font-semibold">
+          <span class="h-2 w-2 rounded-full bg-danger animate-pulse"></span>
+          <span>{{ 'error.notFound.badge' | translate }}</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+          {{ title() ?? ('error.notFound.title' | translate) }}
+        </h1>
+
+        <p class="text-sm text-muted max-w-md mx-auto leading-relaxed">
+          {{ description() ?? ('error.notFound.subtitle' | translate) }}
+        </p>
+      </div>
+
+      <!-- Quick Search Hint Card -->
+      <div class="p-3.5 rounded-2xl border border-border bg-surface/70 backdrop-blur-sm shadow-xs max-w-sm mx-auto text-xs text-muted flex items-center justify-center gap-2">
+        <app-icon name="search" size="xs" class="text-primary shrink-0" />
+        <span class="truncate">{{ 'error.notFound.searchNotice' | translate }}</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <app-button
+          variant="primary"
+          size="md"
+          icon="home"
+          (click)="handleGoHome()"
+        >
+          {{ homeLabel() ?? ('error.notFound.backHome' | translate) }}
+        </app-button>
+
+        @if (showBack()) {
+          <app-button
+            variant="outline"
+            size="md"
+            icon="arrow-left"
+            (click)="handleGoBack()"
+          >
+            {{ backLabel() ?? ('error.notFound.goBack' | translate) }}
+          </app-button>
+        }
+
+        <ng-content select="[not-found-actions]" />
+      </div>
+    </div>
+  </main>
+
+  <!-- Clean Footer -->
+  @if (!embedded()) {
+    <footer class="relative z-10 py-4 px-6 text-center text-xs text-muted border-t border-border/40 bg-surface/30">
+      <p>&copy; {{ 'common.allRightsReserved' | translate }} Admin Portal</p>
+    </footer>
+  }
+</div>

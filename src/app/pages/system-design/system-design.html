@@ -1,0 +1,893 @@
+<div class="h-screen h-dvh flex overflow-hidden bg-background text-foreground">
+  <!-- ──────────────────────────────────────────
+       DESKTOP & MOBILE SIDEBAR (Global Layout Component)
+  ────────────────────────────────────────── -->
+  <app-sidebar
+    [sections]="navigationSections()"
+    [(collapsed)]="desktopSidebarCollapsed"
+    [(mobileOpen)]="mobileSidebarOpen"
+    (sectionClick)="scrollToSection($event)"
+    (toastTrigger)="triggerSampleToast()"
+  />
+
+  <!-- ──────────────────────────────────────────
+       MAIN COLUMN: Top Header + Scrollable Content + Footer
+  ────────────────────────────────────────── -->
+  <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+    <!-- Global Header Component (Shared across all pages) -->
+    <app-header
+      title="Admin Portal System Design"
+      badge="77/77 Ready"
+      [user]="sampleUserMenuData"
+      [(sidebarOpen)]="mobileSidebarOpen"
+      (toggleSidebar)="toggleSidebar()"
+      (openCommandPalette)="commandPaletteOpen.set(true)"
+    />
+
+    <!-- Main Scrollable Area with Content and Sticky Bottom Footer -->
+    <main class="flex-1 overflow-y-auto overscroll-contain overflow-x-hidden flex flex-col justify-between max-w-full">
+      <div class="pt-6 pb-6 px-4 sm:px-6 lg:px-8 space-y-12 max-w-7xl w-full mx-auto flex-1">
+
+        <!-- ──────────────────────────────────────────
+             SECTION 1: BUTTONS, ICONS, BADGES & TAGS
+        ────────────────────────────────────────── -->
+        <section id="section-1" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">1. Foundation: Buttons, Icons, Badges & Tags</h2>
+            <p class="text-xs text-muted">Core visual primitives, interactive triggers, status indicators, and pill badges.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Button Variants -->
+            <div class="rounded-xl border border-border bg-surface p-5 space-y-3">
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Button Variants</h3>
+              <div class="flex flex-wrap items-center gap-2.5">
+                <app-button variant="primary">Primary</app-button>
+                <app-button variant="secondary">Secondary</app-button>
+                <app-button variant="outline">Outline</app-button>
+                <app-button variant="ghost">Ghost</app-button>
+                <app-button variant="danger">Danger</app-button>
+                <app-button variant="success">Success</app-button>
+                <app-button variant="warning">Warning</app-button>
+                <app-button variant="link">Link Button</app-button>
+              </div>
+            </div>
+
+            <!-- Button Sizes & States -->
+            <div class="rounded-xl border border-border bg-surface p-5 space-y-3">
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Sizes, Icons & Loading</h3>
+              <div class="flex flex-wrap items-center gap-2.5">
+                <app-button size="xs" variant="primary">Size XS</app-button>
+                <app-button size="sm" variant="primary">Size SM</app-button>
+                <app-button size="md" variant="primary">Size MD</app-button>
+                <app-button size="lg" variant="primary">Size LG</app-button>
+                <app-button variant="primary" icon="plus">With Icon</app-button>
+                <app-button variant="outline" [loading]="true">Loading</app-button>
+                <app-icon-button name="settings" label="Settings" variant="outline" size="sm" />
+                <app-icon-button name="trash" label="Delete" variant="danger" size="sm" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Badges & Status Tags Row -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+            <div>
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">Status Badges (STATUS_MAP)</h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <app-status-badge status="active" />
+                <app-status-badge status="pending" />
+                <app-status-badge status="inactive" />
+                <app-status-badge status="archived" />
+                <app-status-badge status="draft" />
+                <app-status-badge status="processing" />
+                <app-status-badge status="completed" />
+                <app-status-badge status="error" />
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">Role Badges (ROLE_MAP)</h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <app-role-badge role="super-admin" />
+                <app-role-badge role="admin" />
+                <app-role-badge role="manager" />
+                <app-role-badge role="editor" />
+                <app-role-badge role="user" />
+                <app-role-badge role="guest" />
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">Generic Badges</h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <app-badge variant="default">Default</app-badge>
+                <app-badge variant="primary">Primary</app-badge>
+                <app-badge variant="success">Success</app-badge>
+                <app-badge variant="warning">Warning</app-badge>
+                <app-badge variant="danger">High Priority</app-badge>
+                <app-badge variant="info">Information</app-badge>
+                <app-badge variant="outline">Outline</app-badge>
+                <app-badge variant="danger" size="sm">99+</app-badge>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">Status Filter Tags & Removable Tags</h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <app-status-tag status="active" />
+                <app-status-tag status="pending" [removable]="true" />
+                <app-status-tag status="processing" />
+                <app-status-tag status="error" [removable]="true" />
+                <app-tag label="Angular 22" variant="primary" [removable]="true" />
+                <app-tag label="Tailwind CSS 4" variant="info" [removable]="true" />
+                <app-tag label="Signals" variant="success" [removable]="true" />
+              </div>
+            </div>
+
+            <!-- Multi-Select Quick Filters Showcase in Section 1 -->
+            <div id="quick-filters-demo" class="pt-4 border-t border-border/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Multi-Select Quick Filters Component</h3>
+                  <p class="text-xs text-muted">Select multiple options with count badges, active checkmarks, and select all / clear all.</p>
+                </div>
+                <span class="rounded bg-primary/10 text-primary text-xs font-semibold px-2 py-0.5">
+                  Multi-Select Model
+                </span>
+              </div>
+              <app-quick-filters
+                label="Quick Filter Multi-Select"
+                [options]="sampleFilterChips"
+                [(selected)]="selectedFilterIds"
+              />
+              @if (selectedFilterIds().length > 0) {
+                <div class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-muted">
+                  <span>Selected ({{ selectedFilterIds().length }}):</span>
+                  @for (id of selectedFilterIds(); track id) {
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary font-mono text-[11px] font-semibold">
+                      {{ id }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 2: FORM CONTROLS
+        ────────────────────────────────────────── -->
+        <section id="section-2" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">2. Form Controls</h2>
+            <p class="text-xs text-muted">Reactive inputs, selects, toggles, and pickers with validation states.</p>
+          </div>
+
+          <div class="rounded-xl border border-border bg-surface p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <app-form-field label="Full Name" hint="Enter legal name" [required]="true">
+                <app-input placeholder="e.g. Sarah Connor" [(ngModel)]="sampleName" name="name" />
+              </app-form-field>
+
+              <app-form-field label="Email Address" [required]="true">
+                <app-input type="email" placeholder="sarah@example.com" [(ngModel)]="sampleEmail" name="email" />
+              </app-form-field>
+
+              <app-form-field label="Role Selection (Standard Select)">
+                <app-select [options]="sampleRoleOptions" [(ngModel)]="sampleRole" name="role" />
+              </app-form-field>
+            </div>
+
+            <!-- Dedicated Select Dropdown with Search & Multi-Select (Choose nhiều item) -->
+            <div id="select-dropdown-demo" class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-border/60">
+              <app-form-field
+                label="Single Select with Real-Time Search"
+                hint="Type to search & filter options, clearable trigger value"
+              >
+                <app-select
+                  [options]="sampleFrameworkOptions"
+                  [searchable]="true"
+                  [clearable]="true"
+                  [(ngModel)]="selectedFramework"
+                  name="framework"
+                  placeholder="Search and choose framework..."
+                />
+              </app-form-field>
+
+              <app-form-field
+                label="Multi-Select Dropdown with Search (Choose nhiều item)"
+                hint="Searchable dropdown, removable tag chips, select/clear all & item checkboxes"
+              >
+                <app-multi-select
+                  [options]="sampleTechnologyOptions"
+                  [(selected)]="selectedTechnologies"
+                  [searchable]="true"
+                  placeholder="Search & choose technologies..."
+                />
+              </app-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <app-form-field label="Date of Birth (Calendar Popup)" hint="Click to open popup with month/year navigation & today shortcut">
+                <app-date-picker placeholder="Select birth date..." [(ngModel)]="sampleDate" name="date" />
+              </app-form-field>
+
+              <app-form-field label="Dedicated Date Range Component (with Quick Presets)" hint="Interval picker with Today, Last 7d, Last 30d shortcuts">
+                <app-date-range-picker [(start)]="sampleRangeStart" [(end)]="sampleRangeEnd" />
+              </app-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <app-form-field label="City Autocomplete">
+                <app-autocomplete [options]="sampleCityOptions" placeholder="Type city name..." [(ngModel)]="sampleCity" name="city" />
+              </app-form-field>
+
+              <app-form-field label="Volume Sensitivity">
+                <app-slider [min]="0" [max]="100" [(ngModel)]="sampleSlider" name="slider" />
+              </app-form-field>
+            </div>
+
+            <!-- Textarea -->
+            <app-form-field label="Project Description" hint="Provide background and specifications (max 500 characters)">
+              <app-textarea placeholder="Describe your project goals..." [rows]="3" [(ngModel)]="sampleBio" name="bio" />
+            </app-form-field>
+
+            <!-- Toggles and checks row -->
+            <div class="flex flex-wrap items-center gap-8 pt-2 border-t border-border/60">
+              <app-checkbox label="Enable push alerts" [(checked)]="sampleCheckbox" />
+              <app-switch label="Dark Mode Sync" [(checked)]="sampleSwitch" />
+              <app-radio [options]="sampleRadioOptions" [(ngModel)]="sampleRadio" name="radioOpt" />
+            </div>
+
+            <!-- File Upload -->
+            <app-form-field label="Avatar / Document Attachment">
+              <app-file-upload [multiple]="false" accept="image/*" />
+            </app-form-field>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 3: NAVIGATION & SHELL COMPONENTS
+        ────────────────────────────────────────── -->
+        <section id="section-3" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">3. Navigation & Layout Shell</h2>
+            <p class="text-xs text-muted">Page headers, breadcrumbs, tab navigation, contextual action menus, and user profiles.</p>
+          </div>
+
+          <div class="rounded-xl border border-border bg-surface p-6 space-y-6">
+            <!-- Breadcrumbs and Page Context Demo -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div class="space-y-1">
+                <app-breadcrumb [items]="sampleBreadcrumbs" />
+                <h3 class="text-lg font-bold text-foreground">Orders Management</h3>
+                <p class="text-xs text-muted">Monitor customer purchase transactions, shipping updates, and refund requests.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <app-menu [items]="sampleDropdownActions" />
+                <app-button variant="outline" size="sm" icon="download">Export CSV</app-button>
+                <app-button variant="primary" size="sm" icon="plus">Create Order</app-button>
+              </div>
+            </div>
+
+            <!-- Tabs Component Demo -->
+            <div class="pt-4 border-t border-border">
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Tabs Component (Data-Driven with Badges)</h3>
+              <app-tabs [tabs]="sampleTabs" [(activeTab)]="activeTabId" />
+              <div class="mt-3 p-4 rounded-xl bg-surface-raised border border-border text-xs text-muted">
+                Active tab view: <strong class="text-foreground capitalize">{{ activeTabId() }}</strong> panel content loaded dynamically.
+              </div>
+            </div>
+
+            <!-- User Menu Component Preview -->
+            <div class="pt-4 border-t border-border flex items-center justify-between">
+              <div>
+                <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">UserMenu Component</h3>
+                <p class="text-xs text-muted">Avatar button trigger with profile links & sign out.</p>
+              </div>
+              <app-user-menu [user]="sampleUserMenuData" />
+            </div>
+
+            <!-- Footer Component Preview -->
+            <div class="pt-4 border-t border-border">
+              <div class="mb-3">
+                <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Footer Component</h3>
+                <p class="text-xs text-muted">Site-wide footer with system status indicator, copyright, and navigation links (docked at page bottom).</p>
+              </div>
+              <div class="rounded-xl border border-dashed border-border bg-surface-raised/40 p-4 text-center">
+                <p class="text-xs text-muted">The <code class="text-primary font-mono font-semibold">&lt;app-footer&gt;</code> is placed at the end of the scrollable content area, scrolling naturally with the page content.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 4: DATA TABLES & PAGINATION
+        ────────────────────────────────────────── -->
+        <section id="section-4" class="space-y-6 scroll-mt-20">
+          <div class="border-b border-border pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-bold text-foreground">4. Data Tables & Pagination Suite</h2>
+              <p class="text-xs text-muted">Compare Table with Pagination, Table without Pagination, Loading Shimmer State, and Standalone Pagination.</p>
+            </div>
+            <!-- Quick Toggle Button for Shimmer State -->
+            <div class="flex items-center gap-2">
+              <app-button
+                size="xs"
+                [variant]="isTableLoading() ? 'danger' : 'outline'"
+                [icon]="isTableLoading() ? 'check' : 'loader'"
+                (click)="isTableLoading.set(!isTableLoading())"
+              >
+                {{ isTableLoading() ? 'Disable Shimmer' : 'Toggle Table Shimmer' }}
+              </app-button>
+            </div>
+          </div>
+
+          <!-- 4.0 MULTI-SELECT QUICK FILTERS -->
+          <div id="quick-filters-table" class="rounded-xl border border-border bg-surface p-5 space-y-3">
+            <div>
+              <h3 class="text-sm font-bold text-foreground">4.0 Multi-Select Quick Filters Component</h3>
+              <p class="text-xs text-muted">Select multiple filter chips simultaneously with check indicators, active counts, and clear-all action.</p>
+            </div>
+            <app-quick-filters
+              label="Dataset Filters"
+              [options]="sampleFilterChips"
+              [(selected)]="selectedFilterIds"
+            />
+            @if (selectedFilterIds().length > 0) {
+              <div class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-muted">
+                <span>Active Filter Criteria:</span>
+                @for (id of selectedFilterIds(); track id) {
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary font-mono text-[11px] font-semibold">
+                    {{ id }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- 4.1 TABLE WITH PAGINATION -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-foreground">4.1 Table WITH Pagination (Sortable, Selectable, Paginated)</h3>
+                <p class="text-xs text-muted">Total: 25 mock records &bull; 5 items per page &bull; Active page navigation</p>
+              </div>
+              <span class="rounded bg-primary/10 text-primary text-xs font-semibold px-2 py-0.5">
+                Page {{ paginatedTablePage() }} of 5
+              </span>
+            </div>
+
+            <app-data-table
+              [columns]="tableColumns"
+              [data]="paginatedTableRows()"
+              [total]="25"
+              [pageSize]="5"
+              [currentPage]="paginatedTablePage()"
+              [selectable]="true"
+              [showActions]="true"
+              [loading]="isTableLoading()"
+              (pageChange)="paginatedTablePage.set($event)"
+              (selectionChange)="selectedTableRows.set($event)"
+            >
+              <div row-actions class="flex justify-end gap-1">
+                <app-icon-button name="edit" label="Edit" size="xs" variant="ghost" />
+                <app-icon-button name="trash" label="Delete" size="xs" variant="ghost" class="text-danger" />
+              </div>
+            </app-data-table>
+          </div>
+
+          <!-- 4.2 TABLE WITHOUT PAGINATION -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-foreground">4.2 Table WITHOUT Pagination (Compact / Embedded List)</h3>
+                <p class="text-xs text-muted">Configured with [paginated]="false" &bull; Ideal for dashboards or top-ranking lists</p>
+              </div>
+              <span class="rounded bg-surface-raised border border-border text-muted text-xs font-mono px-2 py-0.5">
+                paginated="false"
+              </span>
+            </div>
+
+            <app-data-table
+              [columns]="tableColumns"
+              [data]="compactTableData"
+              [paginated]="false"
+              [selectable]="false"
+              [showActions]="true"
+            >
+              <div row-actions class="flex justify-end gap-1">
+                <app-button size="xs" variant="ghost">View</app-button>
+              </div>
+            </app-data-table>
+          </div>
+
+          <!-- 4.3 STANDALONE PAGINATION COMPONENT -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-3">
+            <div>
+              <h3 class="text-sm font-bold text-foreground">4.3 Standalone PaginationComponent</h3>
+              <p class="text-xs text-muted">Use independently for custom data grids, photo galleries, or server-backed search feeds.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface-raised border border-border">
+              <app-pagination
+                [total]="250"
+                [pageSize]="10"
+                [currentPage]="standalonePage()"
+                (pageChange)="standalonePage.set($event)"
+              />
+            </div>
+            <p class="text-[11px] text-muted text-center">
+              Selected Page: <strong class="text-foreground">{{ standalonePage() }}</strong> &bull; Total records: 250 &bull; Page size: 10
+            </p>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 5: LOADING SHIMMERS, SPINNERS & OVERLAYS
+        ────────────────────────────────────────── -->
+        <section id="section-5" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2 flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-foreground">5. Loading Shimmers, Skeletons & Spinners</h2>
+              <p class="text-xs text-muted">Skeletons for content placeholders, SVG spinner sizes, and backdrop loading overlays.</p>
+            </div>
+            <app-button
+              size="xs"
+              variant="outline"
+              icon="loader"
+              (click)="isOverlayActive.set(!isOverlayActive())"
+            >
+              {{ isOverlayActive() ? 'Hide Overlay' : 'Test Container Overlay' }}
+            </app-button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Shimmer Text & Title -->
+            <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Text & Title Shimmers</h3>
+              <div class="space-y-3">
+                <app-loading-shimmer variant="title" widthClass="w-3/4" />
+                <app-loading-shimmer variant="text" [lines]="3" />
+              </div>
+            </div>
+
+            <!-- Shimmer Avatar & Profile -->
+            <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Avatar & Card Shimmers</h3>
+              <div class="flex items-center gap-3">
+                <app-loading-shimmer variant="avatar" />
+                <div class="space-y-2 flex-1">
+                  <app-loading-shimmer variant="title" widthClass="w-1/2" />
+                  <app-loading-shimmer variant="text" [lines]="1" />
+                </div>
+              </div>
+              <div class="pt-2">
+                <app-loading-shimmer variant="button" widthClass="w-full" />
+              </div>
+            </div>
+
+            <!-- Spinners Showcase -->
+            <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Spinner Sizes & Labels</h3>
+              <div class="flex flex-wrap items-center gap-4">
+                <app-spinner size="xs" />
+                <app-spinner size="sm" />
+                <app-spinner size="md" />
+                <app-spinner size="lg" />
+                <app-spinner size="xl" />
+              </div>
+              <div class="pt-2">
+                <app-spinner size="sm" label="Syncing telemetry data..." />
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading Overlay Demo Box -->
+          <div class="relative rounded-xl border border-border bg-surface p-6 overflow-hidden">
+            @if (isOverlayActive()) {
+              <app-loading-overlay message="Saving changes to cloud cluster..." description="This may take a moment." />
+            }
+            <div class="space-y-3">
+              <h3 class="text-sm font-bold text-foreground">Protected Database Transaction</h3>
+              <p class="text-xs text-muted leading-relaxed">
+                Click the "Test Container Overlay" button above to simulate how the LoadingOverlay component blurs this content and presents an accessible SVG spinner with status messages.
+              </p>
+              <div class="flex gap-2">
+                <app-button size="xs" variant="primary">Submit Record</app-button>
+                <app-button size="xs" variant="outline">Reset Defaults</app-button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 6: CARDS, KPIS, STEPPERS & ACCORDIONS
+        ────────────────────────────────────────── -->
+        <section id="section-6" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">6. Metric KPIs, Steppers, Avatars & Accordions</h2>
+            <p class="text-xs text-muted">Dashboard stat cards, progress bars, wizards, and collapsible panels.</p>
+          </div>
+
+          <!-- Stat KPI Cards Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <app-stat-card
+              title="Total Revenue"
+              value="$124,592"
+              [trend]="14.2"
+              icon="trending-up"
+              trendLabel="vs previous month"
+            />
+            <app-stat-card
+              title="Active Users"
+              value="14,280"
+              [trend]="8.1"
+              icon="users"
+              trendLabel="daily active members"
+            />
+            <app-stat-card
+              title="Server Latency"
+              value="42ms"
+              [trend]="-5.4"
+              icon="clock"
+              trendLabel="average ping response"
+            />
+            <app-stat-card
+              title="Failed Orders"
+              value="12"
+              [trend]="2.1"
+              icon="alert-triangle"
+              trendLabel="requires review"
+            />
+          </div>
+
+          <!-- Avatars, Stepper & Progress Showcase -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Avatars Card -->
+            <app-card class="block overflow-hidden shadow-xs">
+              <app-card-header class="px-6 py-5 border-b border-border">
+                <app-card-title>Avatar & AvatarGroup</app-card-title>
+                <app-card-description>Individual avatars with initials fallback and stacked overflow.</app-card-description>
+              </app-card-header>
+              <app-card-content class="block p-6 space-y-6">
+                <div class="p-5 rounded-xl bg-surface-raised/70 border border-border/70 space-y-3">
+                  <h4 class="text-xs font-semibold text-muted uppercase tracking-wider">Individual Avatars (Sizes SM to XL)</h4>
+                  <div class="flex flex-wrap items-center gap-4 pt-1">
+                    <app-avatar name="Sarah Connor" size="sm" />
+                    <app-avatar name="John Connor" size="md" />
+                    <app-avatar name="Kyle Reese" size="lg" />
+                    <app-avatar name="Marcus Wright" size="xl" />
+                  </div>
+                </div>
+
+                <div class="p-5 rounded-xl bg-surface-raised/70 border border-border/70 space-y-3">
+                  <h4 class="text-xs font-semibold text-muted uppercase tracking-wider">Avatar Group (Max 4 Visible with Counter)</h4>
+                  <div class="pt-1">
+                    <app-avatar-group [users]="sampleAvatarUsers" [max]="4" />
+                  </div>
+                </div>
+              </app-card-content>
+            </app-card>
+
+            <!-- Progress & Stepper Card -->
+            <app-card class="block overflow-hidden shadow-xs">
+              <app-card-header class="px-6 py-5 border-b border-border">
+                <app-card-title>Progress & Stepper</app-card-title>
+                <app-card-description>Multi-step forms and loading progress bars.</app-card-description>
+              </app-card-header>
+              <app-card-content class="block p-6 space-y-6">
+                <div class="p-5 rounded-xl bg-surface-raised/70 border border-border/70 space-y-3">
+                  <div class="flex justify-between text-xs font-medium">
+                    <span class="text-foreground">Task Completion</span>
+                    <span class="font-semibold text-primary">72%</span>
+                  </div>
+                  <app-progress [value]="72" variant="default" />
+                  <div class="flex justify-between text-xs font-medium pt-2">
+                    <span class="text-foreground">System Health</span>
+                    <span class="font-semibold text-success">95%</span>
+                  </div>
+                  <app-progress [value]="95" variant="success" />
+                </div>
+
+                <div class="p-5 rounded-xl bg-surface-raised/70 border border-border/70 space-y-3">
+                  <h4 class="text-xs font-semibold text-muted uppercase tracking-wider">Multi-Step Form Progression</h4>
+                  <div class="pt-2 pb-1">
+                    <app-stepper [steps]="sampleSteps" [(activeStep)]="activeStepperStep">
+                      <div class="py-2 text-xs text-muted text-center sm:text-left">
+                        @switch (activeStepperStep()) {
+                          @case ('step-1') {
+                            <p class="font-medium text-foreground">Step 1: Setup Primary Account Credentials</p>
+                          }
+                          @case ('step-2') {
+                            <p class="font-medium text-foreground">Step 2: Configure Workspace Profile & Permissions</p>
+                          }
+                          @case ('step-3') {
+                            <p class="font-medium text-foreground">Step 3: Verification & Security Review</p>
+                          }
+                        }
+                      </div>
+                    </app-stepper>
+                  </div>
+                </div>
+              </app-card-content>
+            </app-card>
+          </div>
+
+          <!-- Accordion Showcase -->
+          <app-card class="block overflow-hidden shadow-xs">
+            <app-card-header class="px-6 py-5 border-b border-border">
+              <app-card-title>Accordion & Collapsible Content</app-card-title>
+              <app-card-description>Expandable panels for FAQs or structured settings.</app-card-description>
+            </app-card-header>
+            <app-card-content class="block p-6 sm:p-8 space-y-6">
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold text-muted uppercase tracking-wider mb-2">Data-Driven Accordion Panel</h4>
+                <app-accordion [items]="sampleAccordionItems" mode="single" />
+              </div>
+
+              <div class="pt-6 border-t border-border space-y-3">
+                <h4 class="text-xs font-semibold text-muted uppercase tracking-wider">Standalone Custom Accordion Item</h4>
+                <app-accordion>
+                  <app-accordion-item title="Can I customize design tokens and color scales?">
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                      Yes. All variables are centralized in styles.scss using Tailwind v4 theme blocks. Updating color values or radius tokens propagates instantly throughout the entire design system.
+                    </p>
+                  </app-accordion-item>
+                </app-accordion>
+              </div>
+            </app-card-content>
+            <app-card-footer class="flex justify-between items-center text-xs text-muted px-6 py-4 border-t border-border bg-surface-raised/40">
+              <span>2 FAQs loaded</span>
+              <app-button size="xs" variant="link">Read Documentation</app-button>
+            </app-card-footer>
+          </app-card>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 7: RESPONSIVE VECTOR CHARTS
+        ────────────────────────────────────────── -->
+        <section id="section-7" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">7. Responsive Vector Charts (Zero Dependencies)</h2>
+            <p class="text-xs text-muted">Pure SVG-based vector charts with smooth curves, gradients, and hover tooltips.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Line Chart Card -->
+            <app-chart-card title="Monthly Sales Velocity" subtitle="Units sold throughout 2026">
+              <app-line-chart [data]="sampleLineData" color="#6366f1" />
+            </app-chart-card>
+
+            <!-- Bar Chart Card -->
+            <app-chart-card title="Weekly User Signups" subtitle="New accounts registered per day">
+              <app-bar-chart [data]="sampleBarData" color="#10b981" />
+            </app-chart-card>
+
+            <!-- Area Chart Card -->
+            <app-chart-card title="System Bandwidth (GB)" subtitle="Inbound network traffic">
+              <app-area-chart [data]="sampleAreaData" color="#3b82f6" />
+            </app-chart-card>
+
+            <!-- Donut / Pie Chart Card -->
+            <app-chart-card title="Traffic Distribution" subtitle="Top referrer channels">
+              <app-pie-chart [data]="samplePieData" [donut]="true" />
+            </app-chart-card>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 8: OVERLAYS, MODALS, DRAWERS & POPOVERS
+        ────────────────────────────────────────── -->
+        <section class="space-y-4">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">8. Overlays, Drawers & Dialogs</h2>
+            <p class="text-xs text-muted">Dialogs, confirm dialogs, slide-over drawers, dropdowns, and tooltips.</p>
+          </div>
+
+          <div class="rounded-xl border border-border bg-surface p-5 flex flex-wrap items-center gap-3">
+            <app-button variant="primary" size="sm" (click)="sampleDialogOpen.set(true)">
+              Open Standard Dialog
+            </app-button>
+
+            <app-button variant="danger" size="sm" (click)="sampleConfirmOpen.set(true)">
+              Open Confirm Dialog
+            </app-button>
+
+            <app-button variant="outline" size="sm" (click)="sampleDrawerOpen.set(true)">
+              Open Right Drawer
+            </app-button>
+
+            <app-dropdown [items]="sampleDropdownActions">
+              <ng-container trigger>
+                <app-button variant="outline" size="sm" icon="ellipsis">Action Menu</app-button>
+              </ng-container>
+            </app-dropdown>
+
+            <app-popover title="Quick Filters">
+              <ng-container trigger>
+                <app-button variant="outline" size="sm" icon="filter">Popover Filter</app-button>
+              </ng-container>
+              <ng-container content>
+                <div class="p-4 space-y-3">
+                  <app-checkbox label="Only active items" [checked]="true" />
+                  <app-checkbox label="Include archived" />
+                  <app-button variant="primary" size="xs" [fullWidth]="true">Apply Filters</app-button>
+                </div>
+              </ng-container>
+            </app-popover>
+
+            <button
+              type="button"
+              class="px-3 py-1.5 text-xs font-medium rounded-xl border border-border bg-surface hover:bg-surface-raised cursor-pointer"
+              appTooltip="Helpful tooltip information rendered above element"
+              tooltipPosition="top"
+            >
+              Hover for Tooltip
+            </button>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 9: FEEDBACK & STATE PLACEHOLDERS
+        ────────────────────────────────────────── -->
+        <section id="section-9" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <h2 class="text-lg font-bold text-foreground">9. Feedback & System States</h2>
+            <p class="text-xs text-muted">Toasts, alerts, empty state, error state, 403, and 404 views.</p>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Toast Triggers -->
+            <div class="rounded-xl border border-border bg-surface p-4 flex flex-wrap items-center gap-2.5">
+              <span class="text-xs font-semibold text-muted mr-2">Trigger Toasts:</span>
+              <app-button size="xs" variant="success" (click)="toastSuccess()">Success Toast</app-button>
+              <app-button size="xs" variant="danger" (click)="toastError()">Error Toast</app-button>
+              <app-button size="xs" variant="warning" (click)="toastWarning()">Warning Toast</app-button>
+              <app-button size="xs" variant="primary" (click)="toastInfo()">Info Toast</app-button>
+            </div>
+
+            <!-- Inline Alerts -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <app-alert variant="info" title="System Update Available" description="Version 2.4.0 is ready to install." [dismissible]="true" />
+              <app-alert variant="warning" title="Storage Threshold" description="You have reached 85% of your cloud quota." actionLabel="Upgrade" />
+            </div>
+
+            <!-- State Cards Preview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="rounded-xl border border-border bg-surface">
+                <app-empty-state
+                  title="No notifications"
+                  description="When you have new alerts, they will show up here."
+                  actionLabel="Refresh Feed"
+                />
+              </div>
+
+              <div class="rounded-xl border border-border bg-surface">
+                <app-error-state
+                  title="Database Query Failed"
+                  description="Unable to reach the read replica pool."
+                  errorCode="503"
+                  retryLabel="Retry Connection"
+                />
+              </div>
+
+              <div class="rounded-xl border border-border bg-surface overflow-hidden">
+                <app-no-permission requiredRole="super-admin" [embedded]="true" />
+              </div>
+
+              <div class="rounded-xl border border-border bg-surface overflow-hidden">
+                <app-not-found [embedded]="true" />
+              </div>
+            </div>
+
+            <!-- Offline Banner Preview -->
+            <div class="rounded-xl border border-border bg-surface overflow-hidden">
+              <app-offline-state mode="banner" [forceOffline]="true" />
+            </div>
+          </div>
+        </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 10: AUTHORIZATION & DIRECTIVES
+        ────────────────────────────────────────── -->
+        <section id="section-10" class="space-y-4 scroll-mt-20">
+          <div class="border-b border-border pb-2 flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-foreground">10. Authorization Directives</h2>
+              <p class="text-xs text-muted">Test structural directives (*appRoleGate and *appPermissionGate) with reactive state.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <app-button
+                size="xs"
+                variant="outline"
+                (click)="toggleDemoAdminRole()"
+              >
+                Simulate Role: {{ authRole() }}
+              </app-button>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+            <div class="p-4 rounded-xl bg-surface-raised border border-border space-y-2">
+              <p class="text-xs text-muted">Content below is guarded with <code>*appRoleGate="'admin'"</code>:</p>
+              <div *appRoleGate="'admin'" class="p-3 rounded-lg bg-success/10 border border-success/20 text-success-dark text-xs font-semibold">
+                🛡️ Privileged Admin Controls Visible! You have full access to sensitive server maintenance functions.
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface-raised border border-border space-y-2">
+              <p class="text-xs text-muted">Content below is guarded with <code>*appPermissionGate="'users:write'"</code>:</p>
+              <div *appPermissionGate="'users:write'" class="p-3 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
+                ✍️ Write Permission Granted! You can invite new users and revoke team memberships.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Global Application Footer Component (Shared across all pages) -->
+      <app-footer
+        companyName="Admin Portal System Design"
+        version="v1.0.0"
+        status="77 Components Ready"
+      />
+    </main>
+  </div>
+
+  <!-- Global Toast Container -->
+  <app-toast-container />
+
+  <!-- Global Command Palette (Cmd+K) -->
+  <app-command-palette [(open)]="commandPaletteOpen" />
+
+  <!-- Standard Dialog Demo -->
+  <app-dialog
+    [(open)]="sampleDialogOpen"
+    title="Edit Workspace Configuration"
+    description="Update cluster settings for your workspace environment."
+    size="md"
+  >
+    <ng-container dialog-body>
+      <div class="space-y-4">
+        <app-form-field label="Cluster Endpoint" [required]="true">
+          <app-input placeholder="https://api.cloud.corp" />
+        </app-form-field>
+        <app-form-field label="Timeout (seconds)">
+          <app-slider [min]="5" [max]="60" [(ngModel)]="dialogSlider" />
+        </app-form-field>
+      </div>
+    </ng-container>
+    <ng-container dialog-footer>
+      <app-button variant="outline" size="sm" (clicked)="sampleDialogOpen.set(false)">Cancel</app-button>
+      <app-button variant="primary" size="sm" (clicked)="sampleDialogOpen.set(false)">Save Config</app-button>
+    </ng-container>
+  </app-dialog>
+
+  <!-- Confirm Dialog Demo -->
+  <app-confirm-dialog
+    [(open)]="sampleConfirmOpen"
+    title="Delete Customer Account"
+    message="This operation cannot be undone. All active subscriptions, invoices, and cloud buckets will be terminated immediately."
+    confirmVariant="danger"
+    confirmLabel="Yes, Delete Account"
+    (confirm)="confirmDelete()"
+  />
+
+  <!-- Right Drawer Demo -->
+  <app-drawer
+    [(open)]="sampleDrawerOpen"
+    position="right"
+    title="Advanced Filter Options"
+  >
+    <div class="p-6 space-y-4 text-xs">
+      <app-form-field label="Date Range">
+        <app-date-picker placeholder="Select starting range..." />
+      </app-form-field>
+      <app-form-field label="Role Filter">
+        <app-select [options]="sampleRoleOptions" />
+      </app-form-field>
+      <app-checkbox label="Only include active sessions" [checked]="true" />
+    </div>
+  </app-drawer>
+</div>

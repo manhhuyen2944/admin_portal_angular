@@ -1,0 +1,73 @@
+<div class="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-surface">
+  <!-- Ambient background decoration with gradient and blur -->
+  <div class="absolute inset-0 bg-radial from-primary/10 via-transparent to-transparent pointer-events-none"></div>
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- Lock Card -->
+  <div class="relative z-10 w-full max-w-sm rounded-3xl border border-border bg-surface/90 backdrop-blur-xl p-8 shadow-2xl transition-all">
+    <!-- Lock badge header -->
+    <div class="flex items-center justify-center mb-6">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">
+        <app-icon name="lock" size="md" />
+      </div>
+    </div>
+
+    <!-- User profile display -->
+    <div class="flex flex-col items-center text-center mb-6">
+      <div class="relative">
+        <app-avatar [name]="userName()" size="lg" class="shadow-lg ring-4 ring-surface" />
+        <div class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-warning border-2 border-surface" title="Session Locked"></div>
+      </div>
+      <h3 class="text-base font-bold text-foreground mt-3.5 tracking-tight">{{ userName() }}</h3>
+      <p class="text-xs text-muted mt-0.5">{{ userEmail() }}</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-5">
+        <app-alert
+          variant="danger"
+          [title]="errorMessage()!"
+          [dismissible]="true"
+          (dismiss)="errorMessage.set(null)"
+        />
+      </div>
+    }
+
+    <!-- Unlock form -->
+    <form (submit)="handleUnlock($event)" class="flex flex-col gap-5" novalidate>
+      <app-form-field [label]="'auth.password' | translate" [required]="true">
+        <app-input
+          [type]="showPassword() ? 'text' : 'password'"
+          [placeholder]="'auth.passwordPlaceholder' | translate"
+          [(ngModel)]="password"
+          name="password"
+          [required]="true"
+          suffix="eye"
+          (suffixClick)="showPassword.set(!showPassword())"
+        />
+      </app-form-field>
+
+      <app-button
+        type="submit"
+        variant="primary"
+        size="md"
+        [fullWidth]="true"
+        [loading]="isLoading()"
+        [disabled]="!password()"
+      >
+        {{ 'auth.unlock' | translate }}
+      </app-button>
+    </form>
+
+    <!-- Switch user footer -->
+    <div class="mt-8 pt-5 border-t border-border text-center">
+      <p class="text-xs text-muted">
+        {{ 'auth.notUser' | translate: { name: userName() } }}
+        <a routerLink="/auth/login" class="font-semibold text-primary hover:underline ml-1">
+          {{ 'auth.signInAnother' | translate }}
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

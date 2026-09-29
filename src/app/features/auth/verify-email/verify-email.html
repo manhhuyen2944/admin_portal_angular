@@ -1,0 +1,125 @@
+<app-auth-layout
+  [title]="isResetFlow() ? ('auth.verifyResetCode' | translate) : ('auth.checkEmail' | translate)"
+  [subtitle]="isResetFlow()
+    ? ('auth.enterCodeResetDesc' | translate)
+    : ('auth.enterCodeEmailDesc' | translate)"
+  [icon]="isResetFlow() ? 'shield' : 'mail'"
+  [backLabel]="isResetFlow() ? ('auth.forgotPassword' | translate) : ('auth.backToSignIn' | translate)"
+  [backHref]="isResetFlow() ? '/auth/forgot-password' : '/auth/login'"
+>
+  @if (isSuccess()) {
+    <!-- Success State -->
+    <div class="rounded-2xl border border-success/30 bg-success/5 p-6 text-center space-y-4">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/10 text-success">
+        <app-icon name="check-circle" size="lg" />
+      </div>
+      <div>
+        <h3 class="text-base font-semibold text-foreground">
+          {{ isResetFlow() ? ('auth.codeVerifiedSuccess' | translate) : ('auth.emailVerifiedSuccess' | translate) }}
+        </h3>
+        <p class="text-sm text-muted mt-1">
+          {{ isResetFlow()
+            ? ('auth.redirectingNewPass' | translate)
+            : ('auth.accountConfirmedDesc' | translate) }}
+        </p>
+      </div>
+      <div class="pt-2">
+        <app-button
+          variant="primary"
+          size="md"
+          [fullWidth]="true"
+          [routerLink]="isResetFlow() ? '/auth/reset-password' : '/auth/login'"
+        >
+          {{ isResetFlow() ? ('auth.setNewPassword' | translate) : ('auth.continueToDashboard' | translate) }}
+        </app-button>
+      </div>
+    </div>
+  } @else {
+    <!-- Destination Info Box (Centered UI restored) -->
+    <div class="rounded-xl border border-border bg-surface-raised/50 p-4 mb-6 text-center">
+      <p class="text-xs text-muted mb-0.5">{{ 'auth.verifyEmailDesc' | translate }}</p>
+      <p class="text-sm font-semibold text-foreground tracking-tight">{{ maskedEmail() }}</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-5">
+        <app-alert
+          variant="danger"
+          [title]="errorMessage()!"
+          [dismissible]="true"
+          (dismiss)="errorMessage.set(null)"
+        />
+      </div>
+    }
+
+    @if (resendSuccess()) {
+      <div class="mb-5">
+        <app-alert
+          variant="success"
+          title="A new 6-digit verification code has been dispatched to your inbox."
+          [dismissible]="true"
+          (dismiss)="resendSuccess.set(false)"
+        />
+      </div>
+    }
+
+    <div class="space-y-6">
+      <!-- 6-digit OTP Input -->
+      <div class="space-y-2">
+        <label class="block text-xs font-medium text-foreground text-center">
+          {{ 'auth.enterCode' | translate }}
+        </label>
+        <app-otp-input
+          #otpInputRef
+          [length]="6"
+          type="number"
+          [disabled]="isLoading()"
+          (valueChange)="onOtpChange($event)"
+          (completed)="onOtpComplete($event)"
+        />
+      </div>
+
+      <!-- Verify Button -->
+      <app-button
+        variant="primary"
+        size="md"
+        [fullWidth]="true"
+        [loading]="isLoading()"
+        [disabled]="otpValue().length < 6"
+        (click)="handleVerify()"
+      >
+        {{ isResetFlow() ? ('auth.verifyContinue' | translate) : ('auth.verifyEmail' | translate) }}
+      </app-button>
+
+      <!-- Resend countdown -->
+      <div class="text-center pt-2">
+        <p class="text-xs text-muted">
+          {{ 'auth.didntReceiveCode' | translate }}
+          @if (cooldown() > 0) {
+            <span class="text-muted font-medium ml-1">
+              {{ 'auth.resendIn' | translate }} <strong class="text-foreground">{{ cooldown() }}s</strong>
+            </span>
+          } @else {
+            <button
+              type="button"
+              [disabled]="isResending()"
+              class="font-semibold text-primary hover:text-primary-dark hover:underline ml-1 cursor-pointer transition-colors"
+              (click)="handleResend()"
+            >
+              {{ isResending() ? ('common.loading' | translate) : ('auth.resendCode' | translate) }}
+            </button>
+          }
+        </p>
+      </div>
+    </div>
+  }
+
+  <ng-container auth-footer>
+    <p class="text-xs text-muted">
+      {{ isResetFlow() ? ('auth.backToSignIn' | translate) : ('auth.wrongEmail' | translate) }}
+      <a routerLink="/auth/login" class="font-semibold text-primary hover:underline ml-1">
+        {{ 'auth.signInAnother' | translate }}
+      </a>
+    </p>
+  </ng-container>
+</app-auth-layout>
