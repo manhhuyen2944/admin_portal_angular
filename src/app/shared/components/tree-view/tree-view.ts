@@ -67,7 +67,7 @@ export interface TreeNode<T = unknown> {
             [placeholder]="searchPlaceholder()"
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
-            class="w-full rounded-xl border border-border bg-surface pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-xs transition-colors"
+            class="w-full rounded-xl border border-border bg-surface pl-8 pr-3 py-1.5 text-base lg:text-xs text-foreground placeholder:text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-xs transition-colors"
           />
           @if (searchQuery()) {
             <button

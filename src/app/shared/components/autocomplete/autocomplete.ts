@@ -155,7 +155,7 @@ export class AutocompleteComponent<T = string> implements ControlValueAccessor {
 
   protected readonly inputClasses = computed(() => {
     const base = [
-      'w-full h-10 rounded-md border bg-surface text-sm text-foreground pl-9',
+      'w-full h-10 rounded-md border bg-surface text-base lg:text-sm text-foreground pl-9',
       'placeholder:text-muted pr-9',
       'transition-colors duration-150',
       'focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary',

@@ -64,7 +64,7 @@ export class TextareaComponent implements ControlValueAccessor {
 
   protected readonly classes = computed(() => {
     const base = [
-      'w-full rounded-md border bg-surface text-foreground text-sm px-3 py-2.5',
+      'w-full rounded-md border bg-surface text-foreground text-base lg:text-sm px-3 py-2.5',
       'placeholder:text-muted resize-y min-h-[80px]',
       'transition-colors duration-150',
       'focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary',

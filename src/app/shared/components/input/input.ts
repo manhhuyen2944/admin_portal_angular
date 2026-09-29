@@ -23,8 +23,8 @@ export type InputType =
 export type InputSize = 'sm' | 'md' | 'lg';
 
 const SIZE_CLASSES: Record<InputSize, string> = {
-  sm: 'h-8 text-sm px-3',
-  md: 'h-10 text-sm px-3',
+  sm: 'h-8 text-base lg:text-sm px-3',
+  md: 'h-10 text-base lg:text-sm px-3',
   lg: 'h-12 text-base px-4',
 };
 
@@ -82,7 +82,7 @@ const SIZE_CLASSES: Record<InputSize, string> = {
 
       <!-- Prefix text (e.g. currency symbol) -->
       @if (prefixText() && !prefix()) {
-        <div class="pointer-events-none absolute left-3 text-sm text-muted select-none">
+        <div class="pointer-events-none absolute left-3 text-base lg:text-sm text-muted select-none">
           {{ prefixText() }}
         </div>
       }

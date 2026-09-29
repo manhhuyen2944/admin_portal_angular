@@ -140,7 +140,7 @@ export type { SelectOption } from '../select/select';
                 />
                 <input
                   type="text"
-                  class="w-full h-8 pl-8 pr-7 text-xs rounded-lg border border-border bg-surface text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  class="w-full h-8 pl-8 pr-7 text-base lg:text-xs rounded-lg border border-border bg-surface text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   [placeholder]="searchPlaceholder()"
                   [value]="searchQuery()"
                   (input)="onSearchInput($event)"

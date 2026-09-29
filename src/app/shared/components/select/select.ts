@@ -111,7 +111,7 @@ export type SelectMode = 'single' | 'multiple';
                 <input
                   #searchInput
                   type="text"
-                  class="w-full h-8 pl-8 pr-3 text-sm border border-border rounded-md
+                  class="w-full h-8 pl-8 pr-3 text-base lg:text-sm border border-border rounded-md
                          bg-surface text-foreground placeholder:text-muted
                          focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   placeholder="Search..."

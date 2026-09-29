@@ -189,6 +189,28 @@ html, body {
   border-radius: var(--radius-sm);
 }
 
+/* ============================================================
+   Prevent iOS & mobile/tablet auto-zoom on input focus.
+   iOS Safari and mobile browsers automatically zoom in when an input has font-size < 16px.
+   Enforcing minimum 16px on mobile/tablet viewports (< 1024px)
+   completely eliminates auto-zoom on focus while keeping touch targets accessible.
+   ============================================================ */
+@media screen and (max-width: 1023.98px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="file"]):not([type="color"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Eliminate tap delay and prevent accidental double-tap zoom on form controls */
+input,
+textarea,
+select,
+button {
+  touch-action: manipulation;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
