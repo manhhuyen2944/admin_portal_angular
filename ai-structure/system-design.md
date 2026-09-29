@@ -234,6 +234,27 @@ src/app/
 
 ---
 
+### Phase 13 — Advanced Layout & Hierarchical Data (`shared/components/`)
+
+- [x] **88. GridComponent & GridColComponent** (`grid/grid.ts`): Enterprise responsive 12-column grid layout with breakpoint col-spans (`spanSm`, `spanMd`, `spanLg`, `spanXl`) and fluid `autoFit` mode.
+- [x] **89. TreeViewComponent** (`tree-view/tree-view.ts`): Hierarchical tree navigation with recursive expandable nodes and cascading 3-state checkbox support (checked, unchecked, indeterminate), search filter, custom icons, and badges.
+- [x] **90. ButtonGroupComponent** (`button-group/button-group.ts`): Connected action toolbars and data-driven segmented controls with horizontal/vertical orientations, attached borders, and single/multiple selection mode.
+
+---
+
+### Phase 14 — Auth Screens Version 2 (Centered Card + Dark/Light Ambient Background, No Image)
+
+- [x] **91. AuthV2LayoutComponent** (`features/auth-v2/auth-v2-layout.ts`): Centered card container (max-w-md), pure CSS ambient dark/light glow background (zero bitmap images), top-right language & theme switcher.
+- [x] **92. LoginV2Component** (`features/auth-v2/login/login.ts`): Route `/auth-v2/login` — Centered sign in with remember-me, forgot password, social dividers.
+- [x] **93. ForgotPasswordV2Component** (`features/auth-v2/forgot-password/forgot-password.ts`): Route `/auth-v2/forgot-password` — Centered password reset request.
+- [x] **94. ResetPasswordV2Component** (`features/auth-v2/reset-password/reset-password.ts`): Route `/auth-v2/reset-password` — Centered new password setting with live strength meter.
+- [x] **95. VerifyEmailV2Component** (`features/auth-v2/verify-email/verify-email.ts`): Route `/auth-v2/verify-email` — Centered 6-digit OTP verification with 60s countdown resend.
+- [x] **96. TwoFactorV2Component** (`features/auth-v2/two-factor/two-factor.ts`): Route `/auth-v2/two-factor` — Centered 2FA verification with TOTP OTP, QR Code pairing, and backup codes.
+- [x] **97. ChangePasswordV2Component** (`features/auth-v2/change-password/change-password.ts`): Route `/auth-v2/change-password` — Centered password change with session invalidation toggle.
+- [x] **98. LockScreenV2Component** (`features/auth-v2/lock-screen/lock-screen.ts`): Route `/auth-v2/lock-screen` — Centered lock card with user avatar and password unlock.
+
+---
+
 ## 4. Specific Patterns & Component Variations
 
 ### Data Table Variations

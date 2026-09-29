@@ -102,12 +102,13 @@ export interface TableRowAction<T> {
                     [class]="thClasses(col)"
                     [style.width]="col.width"
                     [attr.aria-sort]="ariaSortLabel(col)"
+                    (click)="col.sortable ? handleSort(col) : null"
                   >
                     @if (col.sortable) {
                       <button
                         type="button"
-                        class="inline-flex items-center gap-1.5 font-semibold hover:text-primary transition-colors"
-                        (click)="handleSort(col)"
+                        class="inline-flex items-center gap-1.5 font-semibold hover:text-primary transition-colors cursor-pointer select-none"
+                        (click)="$event.stopPropagation(); handleSort(col)"
                       >
                         {{ col.header }}
                         <app-icon [name]="sortIcon(col)" size="xs"
@@ -273,7 +274,8 @@ export class DataTableComponent<T extends Record<string, unknown> = Record<strin
     const base = 'px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-secondary';
     const align = col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : '';
     const hide = col.hideMobile ? 'hidden md:table-cell' : '';
-    return `${base} ${align} ${hide}`.trim();
+    const sortable = col.sortable ? 'cursor-pointer select-none' : '';
+    return `${base} ${align} ${hide} ${sortable}`.trim();
   }
 
   protected tdClasses(col: TableColumn<T>): string {

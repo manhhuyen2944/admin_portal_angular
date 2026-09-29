@@ -2,18 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   model,
   output,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import {
   IconComponent,
   type IconName,
-  AvatarComponent,
-  IconButtonComponent,
   ButtonComponent,
   DrawerComponent,
   LanguageSelectorComponent,
@@ -26,6 +25,9 @@ export interface SidebarSubItem {
   label: string;
   id?: string;
   routerLink?: string;
+  badge?: string;
+  icon?: IconName;
+  subItems?: SidebarSubItem[];
 }
 
 export interface SidebarNavSection {
@@ -64,9 +66,8 @@ export type SystemDesignNavSection = SidebarNavSection;
   imports: [
     CommonModule,
     RouterLink,
+    RouterLinkActive,
     IconComponent,
-    AvatarComponent,
-    IconButtonComponent,
     ButtonComponent,
     DrawerComponent,
     LanguageSelectorComponent,
@@ -100,7 +101,7 @@ export class SidebarComponent {
 
   /** User profile data */
   user = input<UserMenuUser | null>(null);
-  showUserFooter = input(true);
+  showUserFooter = input(false);
 
   /** Mobile quick preference controls (Language, Density, Toast) */
   showControls = input(false);
@@ -138,17 +139,64 @@ export class SidebarComponent {
     return this.defaultUser;
   });
 
-  /** Submenu accordion expansion map */
+  private router = inject(Router, { optional: true });
+
+  /** Submenu accordion expansion map (supports level 1 accordion) */
   protected expandedSubmenus = signal<Record<string, boolean>>({
-    'system-design': true,
-    'authentication': false,
-    'dashboard': false,
-    'users': false,
-    'settings': false,
-    'section-1': false,
-    'section-2': true,
-    'section-4': true,
+    'authentication': true,
   });
+
+  /** Sub-version / group tab selection (e.g. 'auth-v1' or 'auth-v2') */
+  protected selectedSubGroup = signal<Record<string, string>>({
+    'authentication': 'auth-v1',
+  });
+
+  constructor() {
+    this.updateActiveGroupFromUrl(this.router?.url);
+    this.router?.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.updateActiveGroupFromUrl(event.urlAfterRedirects || event.url);
+      }
+    });
+  }
+
+  private updateActiveGroupFromUrl(url?: string): void {
+    if (!url) return;
+    if (url.includes('auth-v2')) {
+      this.selectedSubGroup.update((prev) => ({ ...prev, authentication: 'auth-v2' }));
+    } else if (url.includes('/auth/')) {
+      this.selectedSubGroup.update((prev) => ({ ...prev, authentication: 'auth-v1' }));
+    }
+  }
+
+  protected hasSubGroups(sec: SidebarNavSection): boolean {
+    return !!sec.subItems?.some((sub) => sub.subItems && sub.subItems.length > 0);
+  }
+
+  protected getActiveSubGroupId(sec: SidebarNavSection): string {
+    return this.selectedSubGroup()[sec.id] || sec.subItems?.[0]?.id || '';
+  }
+
+  protected getActiveSubGroup(sec: SidebarNavSection): SidebarSubItem | undefined {
+    if (!sec.subItems || sec.subItems.length === 0) return undefined;
+    const currentId = this.getActiveSubGroupId(sec);
+    return sec.subItems.find((s) => s.id === currentId) ?? sec.subItems[0];
+  }
+
+  protected setSubGroup(secId: string, groupId: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this.selectedSubGroup.update((prev) => ({
+      ...prev,
+      [secId]: groupId,
+    }));
+  }
+
+  protected isExpanded(id: string): boolean {
+    return !!this.expandedSubmenus()[id];
+  }
 
   toggleCollapse(): void {
     this.collapsed.update((v) => !v);
@@ -160,24 +208,32 @@ export class SidebarComponent {
 
   protected onParentNavClick(sec: SidebarNavSection): void {
     if (sec.subItems && sec.subItems.length > 0) {
-      this.expandedSubmenus.update((prev) => ({
-        ...prev,
-        [sec.id]: !prev[sec.id],
-      }));
+      this.toggleSubmenu(sec.id);
       this.sectionClick.emit(sec.id);
     } else {
       this.onSubItemClick(sec.id);
     }
   }
 
-  protected toggleSubmenu(secId: string, event?: MouseEvent): void {
+  protected toggleSubmenu(secId: string, event?: Event): void {
     if (event) {
       event.stopPropagation();
+      event.preventDefault();
     }
     this.expandedSubmenus.update((prev) => ({
       ...prev,
       [secId]: !prev[secId],
     }));
+  }
+
+  protected onSubParentClick(sub: SidebarSubItem, event?: Event): void {
+    if (sub.subItems && sub.subItems.length > 0) {
+      if (sub.id) {
+        this.toggleSubmenu(sub.id, event);
+      }
+    } else {
+      this.onSubItemClick(sub.id ?? '');
+    }
   }
 
   protected onSubItemClick(id: string): void {

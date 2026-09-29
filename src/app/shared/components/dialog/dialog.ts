@@ -73,31 +73,46 @@ const SIZE_CLASSES: Record<DialogSize, string> = {
 
 
           <!-- Header -->
-          <div class="flex items-start justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border shrink-0">
-            <div class="min-w-0 pr-3 pt-0.5">
-              @if (title()) {
-                <h2 class="text-base sm:text-lg font-semibold text-foreground leading-snug">{{ title() }}</h2>
+          @if (hasHeader()) {
+            <div class="flex items-start justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border shrink-0">
+              <div class="min-w-0 pr-3 pt-0.5">
+                @if (title()) {
+                  <h2 class="text-base sm:text-lg font-semibold text-foreground leading-snug">{{ title() }}</h2>
+                }
+                @if (description()) {
+                  <p class="text-xs sm:text-sm text-muted mt-1 leading-relaxed">{{ description() }}</p>
+                }
+                <ng-content select="[dialog-header]" />
+              </div>
+              @if (showClose()) {
+                <button
+                  type="button"
+                  class="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg text-muted
+                         hover:text-foreground hover:bg-surface-raised transition-colors cursor-pointer
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                  aria-label="Close dialog"
+                  (click)="close()"
+                >
+                  <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"/>
+                  </svg>
+                </button>
               }
-              @if (description()) {
-                <p class="text-xs sm:text-sm text-muted mt-1 leading-relaxed">{{ description() }}</p>
-              }
-              <ng-content select="[dialog-header]" />
             </div>
-            @if (showClose()) {
-              <button
-                type="button"
-                class="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg text-muted
-                       hover:text-foreground hover:bg-surface-raised transition-colors cursor-pointer
-                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-                aria-label="Close dialog"
-                (click)="close()"
-              >
-                <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"/>
-                </svg>
-              </button>
-            }
-          </div>
+          } @else if (showClose()) {
+            <button
+              type="button"
+              class="absolute right-3.5 top-3.5 z-10 shrink-0 flex h-8 w-8 items-center justify-center rounded-lg text-muted
+                     hover:text-foreground hover:bg-surface-raised transition-colors cursor-pointer
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+              aria-label="Close dialog"
+              (click)="close()"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          }
 
           <!-- Body -->
           <div class="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 py-4 sm:py-5 min-h-0">
@@ -128,10 +143,19 @@ export class DialogComponent {
   description = input<string | undefined>(undefined);
   size = input<DialogSize>('md');
   showClose = input(true);
+  /** Explicitly show/hide the header bar. If undefined, defaults to true when title or description is provided. */
+  showHeader = input<boolean | undefined>(undefined);
   /** Whether clicking the backdrop closes the dialog. Default: true. */
   closeOnBackdrop = input(true);
 
   closed = output<void>();
+
+  protected readonly hasHeader = computed(() => {
+    if (this.showHeader() !== undefined) {
+      return this.showHeader()!;
+    }
+    return !!this.title() || !!this.description();
+  });
 
   private readonly doc = inject(DOCUMENT);
 

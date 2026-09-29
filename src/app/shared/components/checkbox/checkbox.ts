@@ -72,8 +72,10 @@ export class CheckboxComponent implements ControlValueAccessor {
   required = input(false);
   indeterminate = input(false);
   checked = model(false);
+  disabled = input(false);
 
-  protected readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   protected readonly boxClasses = computed(() => {
     const base = 'flex h-5 w-5 items-center justify-center rounded border-2 transition-all duration-150';
@@ -93,7 +95,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   }
   registerOnChange(fn: (v: boolean) => void): void { this._onChange = fn; }
   registerOnTouched(fn: () => void): void { this._onTouched = fn; }
-  setDisabledState(isDisabled: boolean): void { this.isDisabled.set(isDisabled); }
+  setDisabledState(isDisabled: boolean): void { this.formDisabled.set(isDisabled); }
 
   protected handleChange(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;

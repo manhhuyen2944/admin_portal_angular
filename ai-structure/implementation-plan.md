@@ -309,6 +309,34 @@ Very Strong → bg-success (4/4 filled, brighter)
 
 ---
 
+## Phase 13 — Advanced Layout & Hierarchical Data (Grid & Tree View)
+
+| # | Component | File path | Status | Done at |
+|---|---|---|---|---|
+| 90 | `GridComponent` / `GridColComponent` — 12-column responsive layout system with breakpoint col spans & autoFit mode | `shared/components/grid/grid.ts` | `done` | 2026-09-29 |
+| 91 | `TreeViewComponent` — Hierarchical tree navigation with recursive expandable nodes and cascading 3-state checkbox support (checked, unchecked, indeterminate) | `shared/components/tree-view/tree-view.ts` | `done` | 2026-09-29 |
+| 92 | `ButtonGroupComponent` — Connected action toolbars and data-driven segmented controls with horizontal/vertical orientations | `shared/components/button-group/button-group.ts` | `done` | 2026-09-29 |
+
+---
+
+## Phase 14 — Auth Screens Version 2 (Centered Card + Dark/Light Ambient Background, No Image)
+
+> **Mục tiêu:** Auth Version 2 — Thiết kế giống UI cũ: form và các trường thông tin nằm chính giữa màn hình (centered-card `max-w-md`), nền pure CSS ambient gradient hỗ trợ tối ưu Dark / Light mode, tích hợp Theme/Language switcher ở góc trên, hoàn toàn không phụ thuộc ảnh bitmap.
+> Giữ nguyên mã nguồn Auth V1 tại `features/auth/` (không chỉnh sửa). Toàn bộ Auth V2 triển khai độc lập tại `features/auth-v2/` và routes `/auth-v2/*`.
+
+| # | Component / Screen | Route | File path | Status | Done at |
+|---|---|---|---|---|---|
+| 93 | `AuthV2LayoutComponent` | — | `features/auth-v2/auth-v2-layout.ts` | `done` | 2026-09-29 |
+| 94 | `LoginV2Component` | `/auth-v2/login` | `features/auth-v2/login/login.ts` | `done` | 2026-09-29 |
+| 95 | `ForgotPasswordV2Component` | `/auth-v2/forgot-password` | `features/auth-v2/forgot-password/forgot-password.ts` | `done` | 2026-09-29 |
+| 96 | `ResetPasswordV2Component` | `/auth-v2/reset-password` | `features/auth-v2/reset-password/reset-password.ts` | `done` | 2026-09-29 |
+| 97 | `VerifyEmailV2Component` | `/auth-v2/verify-email` | `features/auth-v2/verify-email/verify-email.ts` | `done` | 2026-09-29 |
+| 98 | `TwoFactorV2Component` | `/auth-v2/two-factor` | `features/auth-v2/two-factor/two-factor.ts` | `done` | 2026-09-29 |
+| 99 | `ChangePasswordV2Component` | `/auth-v2/change-password` | `features/auth-v2/change-password/change-password.ts` | `done` | 2026-09-29 |
+| 100 | `LockScreenV2Component` | `/auth-v2/lock-screen` | `features/auth-v2/lock-screen/lock-screen.ts` | `done` | 2026-09-29 |
+
+---
+
 ## How AI should use this file
 
 1. **Trước khi implement:** Đọc file này, kiểm tra Status. Nếu `in-progress` → báo cho user trước khi tiếp tục.
@@ -317,6 +345,7 @@ Very Strong → bg-success (4/4 filled, brighter)
 4. **Cùng lúc:** Cập nhật cột Status trong `component-catalog.md` từ `planned` → `exists`.
 5. **Nếu không cần:** Đổi → `n/a` + ghi lý do ngắn.
 6. **Auth redesign:** Phase 12 screens KHÔNG được thêm vào `system-design.ts` showcase — chúng là standalone routes.
+7. **Phase 13:** Grid & TreeView (với checkbox) hiển thị trong Section 11 của `system-design.ts` showcase.
 
 > **Dependency rule:** Không implement component có dependency chưa `done`.
 >
@@ -332,5 +361,6 @@ Very Strong → bg-success (4/4 filled, brighter)
 > Phase 10 (Charts)      — cần Phase 5
 > Phase 11 (CommandPalette) — cần Phase 4
 > Phase 12 (Auth Redesign) — cần Phase 9 + OtpInput + QrCode (items 77–81 trước)
+> Phase 13 (Grid & TreeView) — cần Phase 1 + 3 (Checkbox)
 > ```
 

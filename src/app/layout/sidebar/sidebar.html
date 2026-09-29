@@ -2,7 +2,7 @@
      DESKTOP / LAPTOP LEFT SIDEBAR (≥ lg)
 ────────────────────────────────────────── -->
 <aside
-  class="hidden lg:flex flex-col shrink-0 border-r border-border bg-surface h-full transition-[width] duration-200 relative z-[1025]"
+  class="hidden lg:flex flex-col shrink-0 border-r border-border bg-surface h-full transition-[width] duration-[400ms] ease-in-out relative z-[1025]"
   [class.w-64]="!collapsed()"
   [class.xl:w-72]="!collapsed()"
   [class.w-[72px]]="collapsed()"
@@ -60,8 +60,9 @@
       @if (!collapsed() && sectionHeading()) {
         <h3 class="text-[10px] font-bold text-muted uppercase tracking-wider px-2 mb-2">{{ sectionHeading() }}</h3>
       }
-      @for (sec of sections(); track sec.id) {
-        <div class="space-y-0.5">
+      <div class="space-y-2.5">
+        @for (sec of sections(); track sec.id) {
+          <div class="space-y-1">
           <div
             class="flex items-center w-full rounded-xl text-xs font-medium text-foreground hover:bg-surface-raised transition-colors group cursor-pointer"
             [class.justify-center]="collapsed()"
@@ -71,7 +72,9 @@
             @if (sec.routerLink && (!sec.subItems || sec.subItems.length === 0)) {
               <a
                 [routerLink]="sec.routerLink"
-                class="flex items-center gap-3 flex-1 min-w-0 px-2.5 py-2 text-left cursor-pointer"
+                routerLinkActive="bg-primary/10 text-primary font-semibold"
+                [routerLinkActiveOptions]="{ exact: false }"
+                class="flex items-center gap-3 flex-1 min-w-0 px-2.5 py-2 text-left cursor-pointer rounded-xl"
                 [title]="sec.title"
                 (click)="onParentNavClick(sec)"
               >
@@ -79,7 +82,7 @@
                   <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
                 </div>
                 @if (!collapsed()) {
-                  <span class="truncate flex-1 text-xs font-semibold">{{ sec.title }}</span>
+                  <span class="truncate flex-1 text-sm font-semibold">{{ sec.title }}</span>
                 }
               </a>
             } @else {
@@ -93,7 +96,7 @@
                   <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
                 </div>
                 @if (!collapsed()) {
-                  <span class="truncate flex-1 text-xs font-semibold">{{ sec.title }}</span>
+                  <span class="truncate flex-1 text-sm font-semibold">{{ sec.title }}</span>
                 }
               </button>
             }
@@ -109,8 +112,8 @@
                 <app-icon
                   name="chevron-down"
                   size="xs"
-                  class="transition-transform duration-200"
-                  [class.rotate-180]="expandedSubmenus()[sec.id]"
+                  class="transition-transform duration-[450ms]"
+                  [class.rotate-180]="isExpanded(sec.id)"
                 />
               </button>
             } @else if (!collapsed() && sec.badge) {
@@ -118,34 +121,96 @@
             }
           </div>
 
-          <!-- Nested Submenu Child Items -->
-          @if (!collapsed() && sec.subItems && expandedSubmenus()[sec.id]) {
-            <div class="pl-8 pr-1 py-1 space-y-1 border-l-2 border-primary/30 ml-4 animate-in slide-in-from-top-1 duration-150">
-              @for (sub of sec.subItems; track sub.label) {
-                @if (sub.routerLink) {
-                  <a
-                    [routerLink]="sub.routerLink"
-                    class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
-                    (click)="onSubItemClick(sub.id ?? '')"
-                  >
-                    <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
-                    <span class="truncate">{{ sub.label }}</span>
-                  </a>
-                } @else {
-                  <button
-                    type="button"
-                    class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
-                    (click)="onSubItemClick(sub.id ?? '')"
-                  >
-                    <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
-                    <span class="truncate">{{ sub.label }}</span>
-                  </button>
-                }
-              }
+          <!-- Submenu Child Items (Level 2 only, reduced left indentation) -->
+          @if (sec.subItems && sec.subItems.length > 0) {
+            <div
+              class="sidebar-accordion-wrapper"
+              [class.is-open]="!collapsed() && isExpanded(sec.id)"
+            >
+              <div class="sidebar-accordion-inner">
+                <div class="pl-3.5 pr-1.5 py-1.5 space-y-2 border-l-2 border-primary/25 ml-4 mt-2 mb-1">
+                  <!-- Check if this section has grouped sub-items (e.g. Auth Version 1 vs Version 2) -->
+                  @if (hasSubGroups(sec)) {
+                    <div class="space-y-3">
+                      @for (grp of sec.subItems; track grp.id || grp.label) {
+                        <div class="space-y-1">
+                          <!-- Group Header (e.g. Version 1, Version 2) -->
+                          <div class="flex items-center justify-between px-2.5 pt-1.5 pb-1 text-[11px] font-bold text-muted uppercase tracking-wider select-none border-b border-border/40">
+                            <div class="flex items-center gap-1.5">
+                              <span class="h-1.5 w-1.5 rounded-full bg-primary/70"></span>
+                              <span>{{ grp.label }}</span>
+                            </div>
+                            @if (grp.badge) {
+                              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                                {{ grp.badge }}
+                              </span>
+                            }
+                          </div>
+
+                          <!-- Child items of this group -->
+                          <div class="space-y-1">
+                            @for (child of grp.subItems; track child.id || child.label) {
+                              @if (child.routerLink) {
+                                <a
+                                  [routerLink]="child.routerLink"
+                                  routerLinkActive="!text-primary font-semibold bg-primary/10"
+                                  [routerLinkActiveOptions]="{ exact: true }"
+                                  class="group/leaf flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                                  (click)="onSubItemClick(child.id ?? '')"
+                                >
+                                  <span class="h-1.5 w-1.5 rounded-full bg-primary/50 group-hover/leaf:bg-primary group-hover/leaf:scale-125 transition-all shrink-0"></span>
+                                  <span class="truncate">{{ child.label }}</span>
+                                </a>
+                              } @else {
+                                <button
+                                  type="button"
+                                  class="group/leaf flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                                  (click)="onSubItemClick(child.id ?? '')"
+                                >
+                                  <span class="h-1.5 w-1.5 rounded-full bg-primary/50 group-hover/leaf:bg-primary group-hover/leaf:scale-125 transition-all shrink-0"></span>
+                                  <span class="truncate">{{ child.label }}</span>
+                                </button>
+                              }
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <!-- Regular Level 2 Flat Items -->
+                    <div class="space-y-1.5">
+                      @for (sub of sec.subItems; track sub.id || sub.label) {
+                        @if (sub.routerLink) {
+                          <a
+                            [routerLink]="sub.routerLink"
+                            routerLinkActive="!text-primary font-semibold bg-primary/10"
+                            [routerLinkActiveOptions]="{ exact: true }"
+                            class="group/item flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                            (click)="onSubItemClick(sub.id ?? '')"
+                          >
+                            <span class="h-1.5 w-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary group-hover/item:scale-125 transition-all shrink-0"></span>
+                            <span class="truncate">{{ sub.label }}</span>
+                          </a>
+                        } @else {
+                          <button
+                            type="button"
+                            class="group/item flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                            (click)="onSubItemClick(sub.id ?? '')"
+                          >
+                            <span class="h-1.5 w-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary group-hover/item:scale-125 transition-all shrink-0"></span>
+                            <span class="truncate">{{ sub.label }}</span>
+                          </button>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
             </div>
           }
         </div>
       }
+      </div>
     }
 
     <!-- Projected custom nav content (for app-sidebar-item, app-sidebar-group, etc.) -->
@@ -153,36 +218,8 @@
     <ng-content />
   </div>
 
-  <!-- Sidebar Footer: Custom slot or User profile -->
+  <!-- Sidebar Custom Footer slot (if provided) -->
   <ng-content select="[sidebar-footer]" />
-
-  @if (showUserFooter()) {
-    <div class="p-3 border-t border-border bg-surface-raised/40 shrink-0">
-      @if (!collapsed()) {
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 min-w-0">
-            <app-avatar [name]="effectiveUser().name" size="xs" />
-            <div class="min-w-0">
-              <p class="text-xs font-semibold text-foreground truncate">{{ effectiveUser().name }}</p>
-              <p class="text-[10px] text-muted truncate">{{ effectiveUser().role ?? 'Admin &bull; Online' }}</p>
-            </div>
-          </div>
-          <app-icon-button
-            name="log-out"
-            [label]="'common.signOut' | translate"
-            size="xs"
-            variant="ghost"
-            class="text-muted hover:text-danger cursor-pointer"
-            (clicked)="signOut.emit()"
-          />
-        </div>
-      } @else {
-        <div class="flex justify-center" [title]="effectiveUser().name">
-          <app-avatar [name]="effectiveUser().name" size="xs" />
-        </div>
-      }
-    </div>
-  }
 </aside>
 
 <!-- ──────────────────────────────────────────
@@ -230,12 +267,12 @@
 
       <!-- Sections Catalog with Dropdown Sub-menus -->
       @if (sections() && sections()!.length > 0) {
-        <div class="space-y-1">
+        <div class="space-y-2.5">
           @if (sectionHeading()) {
             <h4 class="text-[11px] font-bold text-muted uppercase tracking-wider px-1 mb-2">{{ sectionHeading() }}</h4>
           }
           @for (sec of sections(); track sec.id) {
-            <div class="space-y-0.5">
+            <div class="space-y-1">
               <div
                 class="flex items-center w-full rounded-xl text-xs font-medium text-foreground hover:bg-surface-raised transition-colors group cursor-pointer"
                 [class.bg-surface-raised]="expandedSubmenus()[sec.id]"
@@ -243,13 +280,15 @@
                 @if (sec.routerLink && (!sec.subItems || sec.subItems.length === 0)) {
                   <a
                     [routerLink]="sec.routerLink"
-                    class="flex items-center gap-3 flex-1 min-w-0 px-3 py-2 text-left cursor-pointer"
+                    routerLinkActive="bg-primary/10 text-primary font-semibold"
+                    [routerLinkActiveOptions]="{ exact: false }"
+                    class="flex items-center gap-3 flex-1 min-w-0 px-3 py-2 text-left cursor-pointer rounded-xl"
                     (click)="onParentNavClick(sec)"
                   >
                     <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                       <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
                     </div>
-                    <span class="truncate flex-1 font-semibold">{{ sec.title }}</span>
+                    <span class="truncate flex-1 text-sm font-semibold">{{ sec.title }}</span>
                   </a>
                 } @else {
                   <button
@@ -260,7 +299,7 @@
                     <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                       <app-icon [name]="sec.icon ?? 'circle'" size="sm" class="text-primary group-hover:scale-110 transition-transform" />
                     </div>
-                    <span class="truncate flex-1 font-semibold">{{ sec.title }}</span>
+                    <span class="truncate flex-1 text-sm font-semibold">{{ sec.title }}</span>
                   </button>
                 }
 
@@ -273,8 +312,8 @@
                     <app-icon
                       name="chevron-down"
                       size="xs"
-                      class="transition-transform duration-200"
-                      [class.rotate-180]="expandedSubmenus()[sec.id]"
+                      class="transition-transform duration-[450ms]"
+                      [class.rotate-180]="isExpanded(sec.id)"
                     />
                   </button>
                 } @else if (sec.badge) {
@@ -282,29 +321,91 @@
                 }
               </div>
 
-              @if (sec.subItems && expandedSubmenus()[sec.id]) {
-                <div class="pl-8 pr-1 py-1 space-y-1 border-l-2 border-primary/30 ml-4 animate-in slide-in-from-top-1 duration-150">
-                  @for (sub of sec.subItems; track sub.label) {
-                    @if (sub.routerLink) {
-                      <a
-                        [routerLink]="sub.routerLink"
-                        class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
-                        (click)="onSubItemClick(sub.id ?? '')"
-                      >
-                        <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
-                        <span class="truncate">{{ sub.label }}</span>
-                      </a>
-                    } @else {
-                      <button
-                        type="button"
-                        class="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-muted hover:text-primary hover:bg-primary/5 transition-colors text-left cursor-pointer truncate"
-                        (click)="onSubItemClick(sub.id ?? '')"
-                      >
-                        <span class="h-1.5 w-1.5 rounded-full bg-primary/40"></span>
-                        <span class="truncate">{{ sub.label }}</span>
-                      </button>
-                    }
-                  }
+              <!-- Submenu Child Items (Level 2 only, reduced left indentation) -->
+              @if (sec.subItems && sec.subItems.length > 0) {
+                <div
+                  class="sidebar-accordion-wrapper"
+                  [class.is-open]="isExpanded(sec.id)"
+                >
+                  <div class="sidebar-accordion-inner">
+                    <div class="pl-3.5 pr-1.5 py-1.5 space-y-2 border-l-2 border-primary/25 ml-4 mt-2 mb-1">
+                      <!-- Check if this section has grouped sub-items (e.g. Auth Version 1 vs Version 2) -->
+                      @if (hasSubGroups(sec)) {
+                        <div class="space-y-3">
+                          @for (grp of sec.subItems; track grp.id || grp.label) {
+                            <div class="space-y-1">
+                              <!-- Group Header (e.g. Version 1, Version 2) -->
+                              <div class="flex items-center justify-between px-2.5 pt-1.5 pb-1 text-[11px] font-bold text-muted uppercase tracking-wider select-none border-b border-border/40">
+                                <div class="flex items-center gap-1.5">
+                                  <span class="h-1.5 w-1.5 rounded-full bg-primary/70"></span>
+                                  <span>{{ grp.label }}</span>
+                                </div>
+                                @if (grp.badge) {
+                                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                                    {{ grp.badge }}
+                                  </span>
+                                }
+                              </div>
+
+                              <!-- Child items of this group -->
+                              <div class="space-y-1">
+                                @for (child of grp.subItems; track child.id || child.label) {
+                                  @if (child.routerLink) {
+                                    <a
+                                      [routerLink]="child.routerLink"
+                                      routerLinkActive="!text-primary font-semibold bg-primary/10"
+                                      [routerLinkActiveOptions]="{ exact: true }"
+                                      class="group/leaf flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                                      (click)="onSubItemClick(child.id ?? '')"
+                                    >
+                                      <span class="h-1.5 w-1.5 rounded-full bg-primary/50 group-hover/leaf:bg-primary group-hover/leaf:scale-125 transition-all shrink-0"></span>
+                                      <span class="truncate">{{ child.label }}</span>
+                                    </a>
+                                  } @else {
+                                    <button
+                                      type="button"
+                                      class="group/leaf flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                                      (click)="onSubItemClick(child.id ?? '')"
+                                    >
+                                      <span class="h-1.5 w-1.5 rounded-full bg-primary/50 group-hover/leaf:bg-primary group-hover/leaf:scale-125 transition-all shrink-0"></span>
+                                      <span class="truncate">{{ child.label }}</span>
+                                    </button>
+                                  }
+                                }
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      } @else {
+                        <!-- Regular Level 2 Flat Items -->
+                        <div class="space-y-1.5">
+                          @for (sub of sec.subItems; track sub.id || sub.label) {
+                            @if (sub.routerLink) {
+                              <a
+                                [routerLink]="sub.routerLink"
+                                routerLinkActive="!text-primary font-semibold bg-primary/10"
+                                [routerLinkActiveOptions]="{ exact: true }"
+                                class="group/item flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                                (click)="onSubItemClick(sub.id ?? '')"
+                              >
+                                <span class="h-1.5 w-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary group-hover/item:scale-125 transition-all shrink-0"></span>
+                                <span class="truncate">{{ sub.label }}</span>
+                              </a>
+                            } @else {
+                              <button
+                                type="button"
+                                class="group/item flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-xs sm:text-[13px] font-medium text-muted hover:text-primary hover:bg-primary/5 hover:translate-x-0.5 transition-all text-left cursor-pointer truncate"
+                                (click)="onSubItemClick(sub.id ?? '')"
+                              >
+                                <span class="h-1.5 w-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary group-hover/item:scale-125 transition-all shrink-0"></span>
+                                <span class="truncate">{{ sub.label }}</span>
+                              </button>
+                            }
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
                 </div>
               }
             </div>
@@ -316,26 +417,5 @@
       <ng-content select="[sidebar-mobile]" />
       <ng-content />
     </div>
-
-    <!-- Drawer Footer with User Info -->
-    @if (showUserFooter()) {
-      <div class="p-4 border-t border-border bg-surface-raised/40 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2.5">
-          <app-avatar [name]="effectiveUser().name" size="sm" />
-          <div class="min-w-0">
-            <p class="text-xs font-semibold text-foreground truncate">{{ effectiveUser().name }}</p>
-            <p class="text-[10px] text-muted truncate">{{ effectiveUser().role ?? 'Admin &bull; Online' }}</p>
-          </div>
-        </div>
-        <app-icon-button
-          name="log-out"
-          [label]="'common.signOut' | translate"
-          size="xs"
-          variant="ghost"
-          class="text-muted hover:text-danger cursor-pointer"
-          (clicked)="signOut.emit()"
-        />
-      </div>
-    }
   </div>
 </app-drawer>

@@ -84,7 +84,7 @@ export class IconButtonComponent {
 
   protected readonly classes = computed(() => {
     const base =
-      'inline-flex items-center justify-center rounded-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-95 select-none';
+      'inline-flex items-center justify-center rounded-md transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 select-none';
     return [base, VARIANT_CLASSES[this.variant()], SIZE_CLASSES[this.size()]]
       .join(' ');
   });

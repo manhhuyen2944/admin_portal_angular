@@ -113,8 +113,8 @@ When building or editing a shared component, confirm:
 | `Tabs` (+ `Tab`, `TabPanel`; `orientation="vertical"`) | — | `VerticalTabs` as a separate component | `exists` |
 | `Pagination` | Single row `justify-between` on all viewports; reused by `DataTable` and standalone; shows compact `X/Y` pill on mobile | — | `exists` |
 | `Stepper` | Multi-step forms/flows; horizontal steps + scroll on mobile; nav buttons col-reverse on mobile | — | `exists` |
-| `Menu` | Context/dropdown menu primitive used by `Dropdown` | — | `exists` |
 | `CommandPalette` / `GlobalSearch` | One component; `Ctrl+K` trigger; full-width on mobile, centered on desktop | Two separate search overlays | `exists` |
+| `Grid` (+ `GridCol`) | 12-column responsive layout container with breakpoint col spans (`spanSm`, `spanMd`, `spanLg`, `spanXl`) and `autoFit` fluid mode | Inconsistent ad-hoc grid classes | `exists` |
 
 ## Icons
 | Canonical | Notes | Do not create | Status |
@@ -126,6 +126,7 @@ When building or editing a shared component, confirm:
 |---|---|---|---|
 | `Button` | `variant`: primary, secondary, outline, ghost, danger, success, warning, link · `size`: xs, sm, md, lg · loading · disabled · `fullWidth` (also sets host `block w-full`) · optional icon slot | `DangerButton`, `SmallButton`, `LoadingButton` | `exists` |
 | `IconButton` | Same variants as Button; requires accessible `label` input | Icon-only `<button>` with raw `<svg>` | `exists` |
+| `ButtonGroup` | Group buttons into connected toolbar or segmented control · `orientation`: horizontal, vertical · `attached`: true/false · `size`, `variant` · optional data-driven `items` + `[(value)]` selection mode | Hand-rolled button toolbars with duplicate rounded borders | `exists` |
 
 ## Forms (ControlValueAccessor)
 
@@ -168,6 +169,7 @@ All form controls implement `ControlValueAccessor`. Common capabilities where me
 | `AreaChart` | Same rules as LineChart | — | `exists` |
 | `PieChart` / `DonutChart` | Responsive: full-width on mobile; `type` input switches between pie and donut. | Wrapping a second chart library | `exists` |
 | `ChartCard` | `Card` + chart component; no data fetching inside | — | `exists` |
+| `TreeView` | Hierarchical tree with recursive expandable nodes, 3-state cascading checkboxes (checked/unchecked/indeterminate), search filter, custom icons, and badges | Raw nested ul/li list markup | `exists` |
 
 ## Overlays
 | Canonical | Notes | Do not create | Status |

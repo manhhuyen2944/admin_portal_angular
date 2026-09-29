@@ -36,7 +36,7 @@
     "settings": "Cài đặt Hệ thống",
     "componentCatalog": "Danh mục Thành phần",
     "navigationMenu": "Menu Điều hướng",
-    "itemsReady": "77/77 Hoàn thành",
+    "itemsReady": "80/80 Hoàn thành",
     "screens": "8 Màn hình",
     "platformAnalytics": "Phân tích Nền tảng",
     "activityLogs": "Nhật ký Hoạt động",
@@ -55,9 +55,12 @@
     "charts": "7. Biểu đồ Vector SVG",
     "overlays": "8. Cửa sổ & Hộp thoại",
     "feedback": "9. Phản hồi & Trạng thái",
-    "authorization": "10. Chỉ thị Phân quyền"
+    "authorization": "10. Chỉ thị Phân quyền",
+    "gridAndTree": "11. Hệ thống Lưới & Cây Dữ liệu"
   },
   "auth": {
+    "version1": "Phiên bản 1 (Split UI)",
+    "version2": "Phiên bản 2 (Centered UI)",
     "signIn": "Đăng nhập",
     "signInToAccount": "Đăng nhập vào tài khoản của bạn",
     "emailAddress": "Địa chỉ email",

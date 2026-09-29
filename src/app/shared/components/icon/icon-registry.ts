@@ -38,6 +38,9 @@ import {
   LucideEyeOff,
   LucideFile,
   LucideFileText,
+  LucideFlag,
+  LucideFolder,
+  LucideFolderOpen,
   LucideFunnel,
   LucideGlobe,
   LucideGrid3x3,
@@ -47,6 +50,7 @@ import {
   LucideInfo,
   LucideKanban,
   LucideKey,
+  LucideLanguages,
   LucideLayoutDashboard,
   LucideList,
   LucideLoader,
@@ -111,6 +115,9 @@ export type IconName =
   | 'file'
   | 'file-text'
   | 'filter'
+  | 'flag'
+  | 'folder'
+  | 'folder-open'
   | 'globe'
   | 'grid'
   | 'home'
@@ -118,6 +125,7 @@ export type IconName =
   | 'inbox'
   | 'info'
   | 'key'
+  | 'languages'
   | 'layout-dashboard'
   | 'list'
   | 'loader'
@@ -178,6 +186,9 @@ export const ICON_REGISTRY: Record<IconName, LucideIcon> = {
   'file':              LucideFile,
   'file-text':         LucideFileText,
   'filter':            LucideFunnel,
+  'flag':              LucideFlag,
+  'folder':            LucideFolder,
+  'folder-open':       LucideFolderOpen,
   'globe':             LucideGlobe,
   'grid':              LucideGrid3x3,
   'home':              LucideHouse,
@@ -185,6 +196,7 @@ export const ICON_REGISTRY: Record<IconName, LucideIcon> = {
   'inbox':             LucideInbox,
   'info':              LucideInfo,
   'key':               LucideKey,
+  'languages':         LucideLanguages,
   'layout-dashboard':  LucideLayoutDashboard,
   'list':              LucideList,
   'loader':            LucideLoader,

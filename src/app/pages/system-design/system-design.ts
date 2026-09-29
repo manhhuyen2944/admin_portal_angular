@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,8 +23,11 @@ import {
 
 // Shared Components Barrel
 import {
+  IconComponent,
   ButtonComponent,
   IconButtonComponent,
+  ButtonGroupComponent,
+  type ButtonGroupItem,
   BadgeComponent,
   StatusBadgeComponent,
   RoleBadgeComponent,
@@ -92,6 +96,10 @@ import {
   CommandPaletteComponent,
   PermissionGateDirective,
   RoleGateDirective,
+  GridComponent,
+  GridColComponent,
+  TreeViewComponent,
+  type TreeNode,
 } from '../../shared';
 
 @Component({
@@ -101,8 +109,10 @@ import {
   imports: [
     CommonModule,
     FormsModule,
+    IconComponent,
     ButtonComponent,
     IconButtonComponent,
+    ButtonGroupComponent,
     BadgeComponent,
     StatusBadgeComponent,
     RoleBadgeComponent,
@@ -168,6 +178,9 @@ import {
     HeaderComponent,
     SidebarComponent,
     FooterComponent,
+    GridComponent,
+    GridColComponent,
+    TreeViewComponent,
   ],
   templateUrl: './system-design.html',
 })
@@ -215,71 +228,47 @@ export class SystemDesignComponent {
   // Navigation sections
   protected readonly navigationSections = computed<SidebarNavSection[]>(() => [
     {
-      id: 'dashboard',
-      title: this.translation.t('nav.dashboard'),
-      icon: 'layout-dashboard',
-      badge: 'Live',
-      routerLink: '/system-design',
-      subItems: [
-        { label: this.translation.t('nav.platformAnalytics'), id: 'section-7' },
-        { label: this.translation.t('nav.activityLogs'), id: 'section-4' },
-      ],
-    },
-    {
       id: 'system-design',
       title: this.translation.t('nav.systemDesign'),
       icon: 'grid',
-      badge: this.translation.t('nav.itemsReady'),
       routerLink: '/system-design',
-      subItems: [
-        { label: this.translation.t('section.foundation'), id: 'section-1' },
-        { label: this.translation.t('section.formControls'), id: 'section-2' },
-        { label: this.translation.t('section.navigation'), id: 'section-3' },
-        { label: this.translation.t('section.dataTables'), id: 'section-4' },
-        { label: this.translation.t('section.skeletons'), id: 'section-5' },
-        { label: this.translation.t('section.kpis'), id: 'section-6' },
-        { label: this.translation.t('section.charts'), id: 'section-7' },
-        { label: this.translation.t('section.overlays'), id: 'section-8' },
-        { label: this.translation.t('section.feedback'), id: 'section-9' },
-        { label: this.translation.t('section.authorization'), id: 'section-10' },
-      ],
     },
     {
       id: 'authentication',
       title: this.translation.t('nav.authentication'),
-      icon: 'shield',
-      badge: this.translation.t('nav.screens'),
-      routerLink: '/auth/login',
+      icon: 'lock',
+      badge: '2 Vers',
       subItems: [
-        { label: this.translation.t('auth.signIn'), id: 'auth-login', routerLink: '/auth/login' },
-        { label: this.translation.t('auth.forgotPassword'), id: 'auth-forgot', routerLink: '/auth/forgot-password' },
-        { label: this.translation.t('auth.verifyOtp'), id: 'auth-otp', routerLink: '/auth/verify-otp' },
-        { label: this.translation.t('auth.resetPassword'), id: 'auth-reset', routerLink: '/auth/reset-password' },
-        { label: this.translation.t('auth.twoFactor'), id: 'auth-2fa', routerLink: '/auth/two-factor' },
-        { label: this.translation.t('auth.lockScreen'), id: 'auth-lock', routerLink: '/auth/lock-screen' },
-        { label: this.translation.t('auth.changePassword'), id: 'auth-change', routerLink: '/auth/change-password' },
-      ],
-    },
-    {
-      id: 'users',
-      title: this.translation.t('nav.userManagement'),
-      icon: 'users',
-      badge: this.translation.t('common.admin'),
-      routerLink: '/system-design',
-      subItems: [
-        { label: this.translation.t('nav.teamDirectory'), id: 'section-4' },
-        { label: this.translation.t('nav.rolePermissions'), id: 'section-10' },
-      ],
-    },
-    {
-      id: 'settings',
-      title: this.translation.t('nav.settings'),
-      icon: 'settings',
-      badge: 'v1.0',
-      routerLink: '/system-design',
-      subItems: [
-        { label: this.translation.t('nav.workspacePreferences'), id: 'section-3' },
-        { label: this.translation.t('nav.environmentConfig'), id: 'section-8' },
+        {
+          id: 'auth-v1',
+          label: this.translation.t('auth.version1'),
+          badge: 'V1',
+          icon: 'lock',
+          subItems: [
+            { label: this.translation.t('auth.signIn'), id: 'auth-login', routerLink: '/auth/login' },
+            { label: this.translation.t('auth.forgotPassword'), id: 'auth-forgot', routerLink: '/auth/forgot-password' },
+            { label: this.translation.t('auth.verifyOtp'), id: 'auth-otp', routerLink: '/auth/verify-otp' },
+            { label: this.translation.t('auth.resetPassword'), id: 'auth-reset', routerLink: '/auth/reset-password' },
+            { label: this.translation.t('auth.twoFactor'), id: 'auth-2fa', routerLink: '/auth/two-factor' },
+            { label: this.translation.t('auth.lockScreen'), id: 'auth-lock', routerLink: '/auth/lock-screen' },
+            { label: this.translation.t('auth.changePassword'), id: 'auth-change', routerLink: '/auth/change-password' },
+          ],
+        },
+        {
+          id: 'auth-v2',
+          label: this.translation.t('auth.version2'),
+          badge: 'V2',
+          icon: 'key',
+          subItems: [
+            { label: this.translation.t('auth.signIn') + ' (V2)', id: 'auth-v2-login', routerLink: '/auth-v2/login' },
+            { label: this.translation.t('auth.forgotPassword') + ' (V2)', id: 'auth-v2-forgot', routerLink: '/auth-v2/forgot-password' },
+            { label: this.translation.t('auth.verifyOtp') + ' (V2)', id: 'auth-v2-otp', routerLink: '/auth-v2/verify-email' },
+            { label: this.translation.t('auth.resetPassword') + ' (V2)', id: 'auth-v2-reset', routerLink: '/auth-v2/reset-password' },
+            { label: this.translation.t('auth.twoFactor') + ' (V2)', id: 'auth-v2-2fa', routerLink: '/auth-v2/two-factor' },
+            { label: this.translation.t('auth.lockScreen') + ' (V2)', id: 'auth-v2-lock', routerLink: '/auth-v2/lock-screen' },
+            { label: this.translation.t('auth.changePassword') + ' (V2)', id: 'auth-v2-change', routerLink: '/auth-v2/change-password' },
+          ],
+        },
       ],
     },
   ]);
@@ -535,4 +524,129 @@ export class SystemDesignComponent {
   protected confirmDelete(): void {
     this.toast.error('Customer account deleted.');
   }
+
+  // ──────────────────────────────────────────
+  // Phase 13: Grid & Tree View Demo States
+  // ──────────────────────────────────────────
+  protected treeViewRef = viewChild(TreeViewComponent);
+  protected selectedTreeNode = signal<TreeNode | null>(null);
+  protected checkedTreeIds = signal<string[]>(['components', 'auth-service', 'i18n-en']);
+
+  protected sampleTreeData: TreeNode[] = [
+    {
+      id: 'root-project',
+      label: 'admin-portal-angular',
+      expanded: true,
+      badge: 'v1.0.0',
+      badgeVariant: 'primary',
+      children: [
+        {
+          id: 'src',
+          label: 'src',
+          expanded: true,
+          children: [
+            {
+              id: 'app',
+              label: 'app',
+              expanded: true,
+              children: [
+                {
+                  id: 'core',
+                  label: 'core',
+                  expanded: true,
+                  badge: '3 services',
+                  badgeVariant: 'default',
+                  children: [
+                    { id: 'auth-service', label: 'auth.service.ts', checked: true, icon: 'file-text' },
+                    { id: 'toast-service', label: 'toast.service.ts', icon: 'file-text' },
+                    { id: 'theme-service', label: 'theme.service.ts', icon: 'file-text' },
+                  ],
+                },
+                {
+                  id: 'shared',
+                  label: 'shared',
+                  expanded: true,
+                  badge: 'Reusable',
+                  badgeVariant: 'success',
+                  children: [
+                    { id: 'components', label: 'components (59 items)', checked: true, badge: '59', badgeVariant: 'success' },
+                    { id: 'directives', label: 'directives (permission/role)', badge: '2', badgeVariant: 'default' },
+                    { id: 'pipes', label: 'pipes (translate.pipe.ts)', badge: '1', badgeVariant: 'default' },
+                  ],
+                },
+                {
+                  id: 'features',
+                  label: 'features',
+                  children: [
+                    { id: 'auth-feature', label: 'auth (8 screens)', badge: '8', badgeVariant: 'warning' },
+                    { id: 'dashboard-feature', label: 'dashboard', badge: 'Active', badgeVariant: 'primary' },
+                  ],
+                },
+              ],
+            },
+            {
+              id: 'assets',
+              label: 'assets',
+              expanded: true,
+              children: [
+                { id: 'i18n-en', label: 'en.json', checked: true, icon: 'file' },
+                { id: 'i18n-vi', label: 'vi.json', icon: 'file' },
+              ],
+            },
+            { id: 'styles-scss', label: 'styles.scss', icon: 'file-text' },
+          ],
+        },
+        {
+          id: 'config-files',
+          label: 'Config Files',
+          children: [
+            { id: 'angular-json', label: 'angular.json', icon: 'settings' },
+            { id: 'package-json', label: 'package.json', icon: 'settings' },
+            { id: 'tsconfig-json', label: 'tsconfig.json', icon: 'settings' },
+          ],
+        },
+      ],
+    },
+  ];
+
+  protected onTreeSelectionChange(ids: string[]): void {
+    this.checkedTreeIds.set(ids);
+  }
+
+  protected onTreeNodeClick(node: TreeNode): void {
+    this.selectedTreeNode.set(node);
+  }
+
+  protected expandAllTree(): void {
+    this.treeViewRef()?.expandAll();
+  }
+
+  protected collapseAllTree(): void {
+    this.treeViewRef()?.collapseAll();
+  }
+
+  protected checkAllTree(): void {
+    this.treeViewRef()?.checkAll();
+  }
+
+  protected uncheckAllTree(): void {
+    this.treeViewRef()?.uncheckAll();
+  }
+
+  // ButtonGroup Demo States
+  protected selectedViewMode = signal<string>('month');
+  protected selectedViewType = signal<string>('grid');
+
+  protected readonly viewModeOptions: ButtonGroupItem[] = [
+    { label: 'Day', value: 'day' },
+    { label: 'Week', value: 'week' },
+    { label: 'Month', value: 'month', badge: 12 },
+    { label: 'Year', value: 'year' },
+  ];
+
+  protected readonly viewTypeOptions: ButtonGroupItem[] = [
+    { label: 'List', value: 'list', icon: 'list' },
+    { label: 'Grid', value: 'grid', icon: 'grid' },
+    { label: 'Calendar', value: 'calendar', icon: 'calendar' },
+  ];
 }

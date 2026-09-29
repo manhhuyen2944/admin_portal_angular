@@ -36,7 +36,7 @@
     "settings": "Settings",
     "componentCatalog": "Component Catalog",
     "navigationMenu": "Navigation Menu",
-    "itemsReady": "77/77 Ready",
+    "itemsReady": "80/80 Ready",
     "screens": "8 Screens",
     "platformAnalytics": "Platform Analytics",
     "activityLogs": "Activity Logs",
@@ -55,9 +55,12 @@
     "charts": "7. Vector SVG Charts",
     "overlays": "8. Overlays & Dialogs",
     "feedback": "9. Feedback & States",
-    "authorization": "10. Authorization Directives"
+    "authorization": "10. Authorization Directives",
+    "gridAndTree": "11. Grid & Tree View"
   },
   "auth": {
+    "version1": "Version 1 (Split UI)",
+    "version2": "Version 2 (Centered UI)",
     "signIn": "Sign In",
     "signInToAccount": "Sign in to your account",
     "emailAddress": "Email address",

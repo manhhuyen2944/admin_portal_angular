@@ -55,18 +55,23 @@ import type { IconName } from '../../shared/components/icon/icon-registry';
           <app-icon
             name="chevron-down"
             size="xs"
-            class="text-muted transition-transform duration-200 shrink-0"
+            class="text-muted transition-transform duration-300 shrink-0"
             [class.rotate-180]="open()"
           />
         }
       </button>
 
-      <!-- Submenu Child Items Container -->
-      @if (open() && !collapsed()) {
-        <div class="pl-4 pr-1 py-1 space-y-1 border-l-2 border-border/40 ml-4.5 animate-in slide-in-from-top-2 duration-150">
-          <ng-content />
+      <!-- Submenu Child Items Container (Smooth accordion grid transition) -->
+      <div
+        class="sidebar-accordion-wrapper"
+        [class.is-open]="open() && !collapsed()"
+      >
+        <div class="sidebar-accordion-inner">
+          <div class="pl-4 pr-1 py-1 space-y-1 border-l-2 border-primary/25 ml-4.5 my-0.5">
+            <ng-content />
+          </div>
         </div>
-      }
+      </div>
     </div>
   `,
 })

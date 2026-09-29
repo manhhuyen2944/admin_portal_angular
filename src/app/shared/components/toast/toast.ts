@@ -15,32 +15,45 @@ import type { IconName } from '../icon/icon-registry';
 import { IconButtonComponent } from '../icon-button/icon-button';
 import { ButtonComponent } from '../button/button';
 
-const VARIANT_CONFIG: Record<ToastVariant, { icon: IconName; iconClass: string; borderClass: string; role: 'status' | 'alert'; ariaLive: 'polite' | 'assertive' }> = {
+interface ToastVariantConfig {
+  icon: IconName;
+  iconClass: string;
+  borderClass: string;
+  bgClass: string;
+  role: 'status' | 'alert';
+  ariaLive: 'polite' | 'assertive';
+}
+
+const VARIANT_CONFIG: Record<ToastVariant, ToastVariantConfig> = {
   success: {
     icon: 'check-circle',
-    iconClass: 'text-success bg-success/10',
-    borderClass: 'border-success/30',
+    iconClass: 'text-success bg-success/25 border border-success/30',
+    borderClass: 'border-success/50 border-l-4 border-l-success',
+    bgClass: 'bg-success/40',
     role: 'status',
     ariaLive: 'polite',
   },
   error: {
     icon: 'alert-circle',
-    iconClass: 'text-danger bg-danger/10',
-    borderClass: 'border-danger/30',
+    iconClass: 'text-danger bg-danger/25 border border-danger/30',
+    borderClass: 'border-danger/50 border-l-4 border-l-danger',
+    bgClass: 'bg-danger/40',
     role: 'alert',
     ariaLive: 'assertive',
   },
   warning: {
     icon: 'alert-triangle',
-    iconClass: 'text-warning bg-warning/10',
-    borderClass: 'border-warning/30',
+    iconClass: 'text-warning bg-warning/25 border border-warning/30',
+    borderClass: 'border-warning/50 border-l-4 border-l-warning',
+    bgClass: 'bg-warning/40',
     role: 'status',
     ariaLive: 'polite',
   },
   info: {
     icon: 'info',
-    iconClass: 'text-info bg-info/10',
-    borderClass: 'border-info/30',
+    iconClass: 'text-info bg-info/25 border border-info/30',
+    borderClass: 'border-info/50 border-l-4 border-l-info',
+    bgClass: 'bg-info/40',
     role: 'status',
     ariaLive: 'polite',
   },
@@ -64,9 +77,12 @@ const VARIANT_CONFIG: Record<ToastVariant, { icon: IconName; iconClass: string; 
       (focusin)="pauseTimer()"
       (focusout)="resumeTimer()"
     >
+      <!-- Base opaque surface layer -->
+      <div class="absolute inset-0 bg-surface rounded-xl -z-10" aria-hidden="true"></div>
+
       <!-- Icon -->
-      <div [class]="'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ' + config().iconClass">
-        <app-icon [name]="config().icon" size="sm" />
+      <div [class]="'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-xs ' + config().iconClass">
+        <app-icon [name]="config().icon" size="md" />
       </div>
 
       <!-- Content -->
@@ -95,7 +111,7 @@ const VARIANT_CONFIG: Record<ToastVariant, { icon: IconName; iconClass: string; 
           label="Dismiss notification"
           size="xs"
           variant="ghost"
-          class="-mr-1.5 -mt-1 shrink-0 text-muted hover:text-foreground"
+          class="-mr-1.5 -mt-1 shrink-0 text-muted hover:text-foreground cursor-pointer"
           (click)="dismiss.emit(toast().id)"
         />
       }
@@ -111,15 +127,16 @@ export class ToastItemComponent implements OnInit {
   private remainingTime = 0;
   private startTime = 0;
 
-  protected config(): { icon: IconName; iconClass: string; borderClass: string; role: 'status' | 'alert'; ariaLive: 'polite' | 'assertive' } {
+  protected config(): ToastVariantConfig {
     return VARIANT_CONFIG[this.toast().variant];
   }
 
   protected containerClasses(): string {
     return [
-      'relative flex items-start gap-3 p-4 rounded-xl border bg-surface shadow-lg',
+      'relative flex items-start gap-3 p-4 rounded-xl border shadow-lg overflow-hidden',
       'transition-all duration-200 animate-in slide-in-from-top-2 fade-in-0',
       this.config().borderClass,
+      this.config().bgClass,
     ].join(' ');
   }
 

@@ -209,3 +209,26 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-muted);
 }
+
+/* ============================================================
+   Sidebar Dropdown & Accordion Menu Animations
+   ============================================================ */
+.sidebar-accordion-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 450ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 450ms ease;
+
+  &.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  > .sidebar-accordion-inner {
+    overflow: hidden;
+  }
+}

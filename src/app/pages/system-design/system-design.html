@@ -17,7 +17,7 @@
     <!-- Global Header Component (Shared across all pages) -->
     <app-header
       title="Admin Portal System Design"
-      badge="77/77 Ready"
+      badge="80/80 Ready"
       [user]="sampleUserMenuData"
       [(sidebarOpen)]="mobileSidebarOpen"
       (toggleSidebar)="toggleSidebar()"
@@ -25,8 +25,8 @@
     />
 
     <!-- Main Scrollable Area with Content and Sticky Bottom Footer -->
-    <main class="flex-1 overflow-y-auto overscroll-contain overflow-x-hidden flex flex-col justify-between max-w-full">
-      <div class="pt-6 pb-6 px-4 sm:px-6 lg:px-8 space-y-12 max-w-7xl w-full mx-auto flex-1">
+    <main class="flex-1 overflow-y-auto overscroll-contain overflow-x-hidden flex flex-col justify-between w-full">
+      <div class="pt-6 pb-6 px-4 sm:px-6 lg:px-8 space-y-12 w-full flex-1">
 
         <!-- ──────────────────────────────────────────
              SECTION 1: BUTTONS, ICONS, BADGES & TAGS
@@ -65,6 +65,114 @@
                 <app-button variant="outline" [loading]="true">Loading</app-button>
                 <app-icon-button name="settings" label="Settings" variant="outline" size="sm" />
                 <app-icon-button name="trash" label="Delete" variant="danger" size="sm" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Button Groups Showcase -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Button Groups (<code class="text-primary font-mono">&lt;app-button-group&gt;</code>)</h3>
+                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-primary/10 text-primary border border-primary/20">NEW</span>
+                </div>
+                <p class="text-xs text-muted mt-0.5">Seamless attached toolbars, segmented toggles, responsive horizontal/vertical layouts, and active states.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <!-- Left Column: Connected Action Toolbars -->
+              <div class="space-y-4">
+                <div>
+                  <h4 class="text-xs font-medium text-foreground mb-2">Attached Action Toolbars</h4>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <!-- Text buttons toolbar -->
+                    <app-button-group size="sm">
+                      <app-button variant="outline" icon="copy">Copy</app-button>
+                      <app-button variant="outline" icon="download">Export</app-button>
+                      <app-button variant="outline" icon="upload">Share</app-button>
+                    </app-button-group>
+
+                    <!-- Icon-only action group -->
+                    <app-button-group size="sm">
+                      <app-button variant="outline" icon="edit" aria-label="Edit"></app-button>
+                      <app-button variant="outline" icon="copy" aria-label="Duplicate"></app-button>
+                      <app-button variant="outline" icon="trash" aria-label="Delete"></app-button>
+                    </app-button-group>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-xs font-medium text-foreground mb-2">Sizes (XS, SM, MD)</h4>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <app-button-group size="xs">
+                      <app-button variant="outline">XS Left</app-button>
+                      <app-button variant="outline">XS Mid</app-button>
+                      <app-button variant="outline">XS Right</app-button>
+                    </app-button-group>
+
+                    <app-button-group size="md">
+                      <app-button variant="outline">MD Previous</app-button>
+                      <app-button variant="primary">Next</app-button>
+                    </app-button-group>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-xs font-medium text-foreground mb-2">Vertical Orientation</h4>
+                  <div class="flex items-start gap-4">
+                    <app-button-group orientation="vertical" size="sm">
+                      <app-button variant="outline" icon="plus">Zoom In</app-button>
+                      <app-button variant="outline" icon="refresh">Reset</app-button>
+                      <app-button variant="outline">Zoom Out</app-button>
+                    </app-button-group>
+                    <p class="text-xs text-muted max-w-xs pt-1">
+                      Perfect for map controls, table zoom, or sidebar action stacks with merged borders.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Interactive Segmented Controls -->
+              <div class="space-y-4">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-xs font-medium text-foreground">Data-Driven Segmented Control</h4>
+                    <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-primary/10 text-primary">Selected: {{ selectedViewMode() }}</span>
+                  </div>
+                  <app-button-group
+                    [items]="viewModeOptions"
+                    [(value)]="selectedViewMode"
+                    size="sm"
+                  />
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-xs font-medium text-foreground">Icon + Text View Switcher</h4>
+                    <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-primary/10 text-primary">View: {{ selectedViewType() }}</span>
+                  </div>
+                  <app-button-group
+                    [items]="viewTypeOptions"
+                    [(value)]="selectedViewType"
+                    size="sm"
+                  />
+                </div>
+
+                <div>
+                  <h4 class="text-xs font-medium text-foreground mb-2">Full-Width Mode (<code class="text-primary font-mono">[fullWidth]="true"</code>)</h4>
+                  <app-button-group
+                    [items]="[
+                      { label: 'Overview', value: 'overview' },
+                      { label: 'Activity', value: 'activity' },
+                      { label: 'Settings', value: 'settings' }
+                    ]"
+                    value="overview"
+                    [fullWidth]="true"
+                    size="sm"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -824,13 +932,239 @@
             </div>
           </div>
         </section>
+
+        <!-- ──────────────────────────────────────────
+             SECTION 11 (PHASE 13): GRID SYSTEM & TREE VIEW WITH CHECKBOX
+        ────────────────────────────────────────── -->
+        <section id="section-11" class="space-y-6 scroll-mt-20">
+          <div class="border-b border-border pb-2">
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg font-bold text-foreground">11. Phase 13: Layout Grid &amp; Tree View (Checkbox)</h2>
+              <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-primary/10 text-primary border border-primary/20">NEW</span>
+            </div>
+            <p class="text-xs text-muted">Advanced 12-column responsive layout system and hierarchical data tree with 3-state cascading checkboxes.</p>
+          </div>
+
+          <!-- 1. Responsive Grid System Showcase -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+            <div>
+              <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">1.1 Responsive 12-Column Grid System (<code class="text-primary font-mono">&lt;app-grid&gt;</code> &amp; <code class="text-primary font-mono">&lt;app-grid-col&gt;</code>)</h3>
+              <p class="text-xs text-muted mt-1">Multi-tier responsive column spanning across mobile, tablet, and desktop breakpoints.</p>
+            </div>
+
+            <!-- 12-column breakdown demo -->
+            <app-grid [cols]="12" gap="sm">
+              <app-grid-col [span]="12">
+                <div class="p-3 rounded-lg border border-primary/30 bg-primary/10 text-primary text-center text-xs font-semibold">
+                  span 12 (Full Width)
+                </div>
+              </app-grid-col>
+
+              <app-grid-col [span]="12" [spanMd]="6">
+                <div class="p-3 rounded-lg border border-border bg-surface-raised text-foreground text-center text-xs font-medium">
+                  span 12 (Mobile) &rarr; span 6 (Tablet+)
+                </div>
+              </app-grid-col>
+              <app-grid-col [span]="12" [spanMd]="6">
+                <div class="p-3 rounded-lg border border-border bg-surface-raised text-foreground text-center text-xs font-medium">
+                  span 12 (Mobile) &rarr; span 6 (Tablet+)
+                </div>
+              </app-grid-col>
+
+              <app-grid-col [span]="12" [spanSm]="6" [spanLg]="4">
+                <div class="p-3 rounded-lg border border-success/30 bg-success/10 text-success-dark text-center text-xs font-medium">
+                  span 12 &rarr; sm: 6 &rarr; lg: 4
+                </div>
+              </app-grid-col>
+              <app-grid-col [span]="12" [spanSm]="6" [spanLg]="4">
+                <div class="p-3 rounded-lg border border-success/30 bg-success/10 text-success-dark text-center text-xs font-medium">
+                  span 12 &rarr; sm: 6 &rarr; lg: 4
+                </div>
+              </app-grid-col>
+              <app-grid-col [span]="12" [spanSm]="12" [spanLg]="4">
+                <div class="p-3 rounded-lg border border-success/30 bg-success/10 text-success-dark text-center text-xs font-medium">
+                  span 12 &rarr; sm: 12 &rarr; lg: 4
+                </div>
+              </app-grid-col>
+
+              <app-grid-col [span]="12" [spanSm]="6" [spanLg]="3">
+                <div class="p-2.5 rounded-lg border border-warning/30 bg-warning/10 text-warning-dark text-center text-xs font-medium">
+                  span 12 (Mobile) &rarr; sm: 6 &rarr; lg: 3
+                </div>
+              </app-grid-col>
+              <app-grid-col [span]="12" [spanSm]="6" [spanLg]="3">
+                <div class="p-2.5 rounded-lg border border-warning/30 bg-warning/10 text-warning-dark text-center text-xs font-medium">
+                  span 12 (Mobile) &rarr; sm: 6 &rarr; lg: 3
+                </div>
+              </app-grid-col>
+              <app-grid-col [span]="12" [spanSm]="6" [spanLg]="3">
+                <div class="p-2.5 rounded-lg border border-warning/30 bg-warning/10 text-warning-dark text-center text-xs font-medium">
+                  span 12 (Mobile) &rarr; sm: 6 &rarr; lg: 3
+                </div>
+              </app-grid-col>
+              <app-grid-col [span]="12" [spanSm]="6" [spanLg]="3">
+                <div class="p-2.5 rounded-lg border border-warning/30 bg-warning/10 text-warning-dark text-center text-xs font-medium">
+                  span 12 (Mobile) &rarr; sm: 6 &rarr; lg: 3
+                </div>
+              </app-grid-col>
+            </app-grid>
+
+            <!-- Responsive Direct Columns Grid Demo -->
+            <div class="pt-2">
+              <h4 class="text-xs font-semibold text-foreground mb-2">Direct Responsive Grid (<code class="text-primary font-mono">[cols]="1" [colsSm]="2" [colsMd]="3" [colsLg]="4"</code>)</h4>
+              <p class="text-[11px] text-muted mb-2.5">Card grid without column wrapper components &mdash; automatically 1 column on mobile, 2 on tablet, and 4 on desktop.</p>
+              <app-grid [cols]="1" [colsSm]="2" [colsMd]="3" [colsLg]="4" gap="sm">
+                <div class="p-3.5 rounded-xl border border-border bg-surface-raised/40 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-foreground">Mobile 1 Col</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted/20 text-muted font-mono">&lt;640px</span>
+                  </div>
+                  <p class="text-[11px] text-muted">Full-width readable blocks for smartphone viewports.</p>
+                </div>
+                <div class="p-3.5 rounded-xl border border-border bg-surface-raised/40 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-foreground">Tablet 2 Cols</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted/20 text-muted font-mono">sm: 640px</span>
+                  </div>
+                  <p class="text-[11px] text-muted">Even 2-column split on iPad / tablet portrait screens.</p>
+                </div>
+                <div class="p-3.5 rounded-xl border border-border bg-surface-raised/40 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-foreground">Tablet 3 Cols</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted/20 text-muted font-mono">md: 768px</span>
+                  </div>
+                  <p class="text-[11px] text-muted">3-column layout on tablet landscape / small laptops.</p>
+                </div>
+                <div class="p-3.5 rounded-xl border border-border bg-surface-raised/40 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-foreground">Desktop 4 Cols</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted/20 text-muted font-mono">lg: 1024px+</span>
+                  </div>
+                  <p class="text-[11px] text-muted">Wide multi-card dashboard view on desktops.</p>
+                </div>
+              </app-grid>
+            </div>
+
+            <!-- Auto-Fit Cards Demo -->
+            <div class="pt-2">
+              <h4 class="text-xs font-semibold text-foreground mb-2">Auto-Fit Grid (<code class="text-primary font-mono">[autoFit]="true" minColWidth="220px"</code>)</h4>
+              <app-grid [autoFit]="true" minColWidth="220px" gap="sm">
+                <div class="p-4 rounded-xl border border-border bg-surface-raised/50 space-y-1">
+                  <p class="text-xs font-bold text-foreground">Widget A</p>
+                  <p class="text-[11px] text-muted">Auto-resizes cleanly to fit container width without breakpoints.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-border bg-surface-raised/50 space-y-1">
+                  <p class="text-xs font-bold text-foreground">Widget B</p>
+                  <p class="text-[11px] text-muted">Fills available row spaces fluidly.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-border bg-surface-raised/50 space-y-1">
+                  <p class="text-xs font-bold text-foreground">Widget C</p>
+                  <p class="text-[11px] text-muted">Zero media queries needed for fluid auto grid.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-border bg-surface-raised/50 space-y-1">
+                  <p class="text-xs font-bold text-foreground">Widget D</p>
+                  <p class="text-[11px] text-muted">Enterprise dashboard layout blocks.</p>
+                </div>
+              </app-grid>
+            </div>
+          </div>
+
+          <!-- 2. Tree View with Checkbox Showcase -->
+          <div class="rounded-xl border border-border bg-surface p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">1.2 Hierarchical Tree View with Cascading Checkboxes (<code class="text-primary font-mono">&lt;app-tree-view&gt;</code>)</h3>
+                <p class="text-xs text-muted mt-1">Multi-level folder/file structure, 3-state checkboxes (checked, unchecked, indeterminate), and instant search filter.</p>
+              </div>
+
+              <!-- Action Toolbar -->
+              <div class="flex flex-wrap items-center gap-1.5">
+                <app-button size="xs" variant="outline" (clicked)="expandAllTree()">Expand All</app-button>
+                <app-button size="xs" variant="outline" (clicked)="collapseAllTree()">Collapse All</app-button>
+                <app-button size="xs" variant="outline" (clicked)="checkAllTree()">Check All</app-button>
+                <app-button size="xs" variant="outline" (clicked)="uncheckAllTree()">Uncheck All</app-button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+              <!-- Left 2 Cols: Tree Component -->
+              <div class="lg:col-span-2">
+                <app-tree-view
+                  [nodes]="sampleTreeData"
+                  [checkable]="true"
+                  [cascadeCheck]="true"
+                  [searchable]="true"
+                  searchPlaceholder="Filter project tree..."
+                  (selectionChange)="onTreeSelectionChange($event)"
+                  (nodeClick)="onTreeNodeClick($event)"
+                />
+              </div>
+
+              <!-- Right Col: Selected Nodes & State Inspector -->
+              <div class="space-y-3">
+                <div class="rounded-xl border border-border bg-surface-raised p-4 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-foreground">Selection State</span>
+                    <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold">
+                      {{ checkedTreeIds().length }} Selected
+                    </span>
+                  </div>
+
+                  <!-- Selected IDs list -->
+                  <div>
+                    <p class="text-[11px] font-semibold text-muted uppercase tracking-wide mb-1.5">Checked Node IDs:</p>
+                    <div class="flex flex-wrap gap-1 max-h-36 overflow-y-auto">
+                      @if (checkedTreeIds().length === 0) {
+                        <span class="text-xs text-muted italic">No items checked</span>
+                      } @else {
+                        @for (id of checkedTreeIds(); track id) {
+                          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface border border-border text-[11px] font-mono text-foreground">
+                            <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+                            {{ id }}
+                          </span>
+                        }
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Last clicked node info -->
+                  @if (selectedTreeNode(); as node) {
+                    <div class="pt-2 border-t border-border space-y-1">
+                      <p class="text-[11px] font-semibold text-muted uppercase tracking-wide">Last Clicked Node:</p>
+                      <div class="p-2 rounded-lg bg-surface border border-border text-xs space-y-0.5">
+                        <div class="flex justify-between text-muted">
+                          <span>Label:</span>
+                          <span class="font-semibold text-foreground">{{ node.label }}</span>
+                        </div>
+                        <div class="flex justify-between text-muted">
+                          <span>ID:</span>
+                          <span class="font-mono text-primary">{{ node.id }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Info note -->
+                <div class="p-3 rounded-xl border border-info/30 bg-info/10 text-xs text-foreground space-y-1">
+                  <p class="font-semibold text-info flex items-center gap-1.5">
+                    <app-icon name="info" size="xs" /> Cascading Checkbox Logic
+                  </p>
+                  <p class="text-[11px] text-foreground-secondary leading-relaxed">
+                    Checking a parent automatically toggles all descendant children. Partial child selection displays an indeterminate (-) minus state on the parent node.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
       <!-- Global Application Footer Component (Shared across all pages) -->
       <app-footer
         companyName="Admin Portal System Design"
         version="v1.0.0"
-        status="77 Components Ready"
+        status="79 Components Ready"
       />
     </main>
   </div>

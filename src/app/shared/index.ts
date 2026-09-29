@@ -11,6 +11,8 @@ export type { IconName } from './components/icon/icon-registry';
 export { ButtonComponent } from './components/button/button';
 export type { ButtonVariant, ButtonSize } from './components/button/button';
 export { IconButtonComponent } from './components/icon-button/icon-button';
+export { ButtonGroupComponent } from './components/button-group/button-group';
+export type { ButtonGroupItem, ButtonGroupOrientation } from './components/button-group/button-group';
 export { LoadingShimmerComponent } from './components/loading-shimmer/loading-shimmer';
 export { SpinnerComponent } from './components/spinner/spinner';
 export { BadgeComponent } from './components/badge/badge';
@@ -135,8 +137,8 @@ export { QrCodeComponent } from './components/qr-code/qr-code';
 // Pipes (i18n)
 export { TranslatePipe } from './pipes/translate.pipe';
 
-
-
-
-
-
+// Layout & Hierarchical (Phase 13)
+export { GridComponent, GridColComponent } from './components/grid/grid';
+export type { GridCols, ColSpan, GridGap, GridAlign, GridJustify } from './components/grid/grid';
+export { TreeViewComponent } from './components/tree-view/tree-view';
+export type { TreeNode } from './components/tree-view/tree-view';
